@@ -1,5 +1,24 @@
-function SponsorLogo({ name }) {
-  return <div className="sponsor-logo">{name}</div>;
+function SponsorLogo({ sponsor }) {
+  return (
+    <div className="sponsor-logo" aria-label={sponsor.name}>
+      {sponsor.logoUrl ? (
+        <img
+          src={sponsor.logoUrl}
+          alt={`${sponsor.name} logo`}
+          className="sponsor-logo__image"
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className={`sponsor-logo__mark sponsor-logo__mark--${sponsor.tone}`}>
+          <span>{sponsor.badge}</span>
+        </div>
+      )}
+      <span className={`sponsor-logo__wordmark sponsor-logo__wordmark--${sponsor.tone}`}>
+        {sponsor.name}
+      </span>
+    </div>
+  );
 }
 
 export default function Sponsors({ sponsors = [] }) {
@@ -14,7 +33,7 @@ export default function Sponsors({ sponsors = [] }) {
 
         <div className="sponsors-section__grid">
           {sponsors.map((sponsor) => (
-            <SponsorLogo key={sponsor} name={sponsor} />
+            <SponsorLogo key={sponsor.id ?? sponsor.name} sponsor={sponsor} />
           ))}
         </div>
       </div>

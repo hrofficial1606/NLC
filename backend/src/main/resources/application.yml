@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: event-management-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/nlc_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 50MB
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS:false}
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  security:
+    jwt:
+      issuer: nlc-event-management
+      access-token-secret: ${JWT_ACCESS_SECRET:please-change-this-access-secret-for-production}
+      refresh-token-secret: ${JWT_REFRESH_SECRET:please-change-this-refresh-secret-for-production}
+      access-token-expiration-minutes: 30
+      refresh-token-expiration-days: 14
+    cors:
+      allowed-origins:
+        - http://localhost:5173
+        - http://localhost:3000
+  media:
+    provider: CLOUDINARY
+    cloudinary:
+      cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+      api-key: ${CLOUDINARY_API_KEY:}
+      api-secret: ${CLOUDINARY_API_SECRET:}
+  payment:
+    razorpay:
+      key-id: ${RAZORPAY_KEY_ID:}
+      key-secret: ${RAZORPAY_KEY_SECRET:}
+      webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:}
+      currency: INR
+  integrations:
+    instagram:
+      enabled: ${INSTAGRAM_SYNC_ENABLED:false}
+      access-token: ${INSTAGRAM_ACCESS_TOKEN:}
+      user-id: ${INSTAGRAM_USER_ID:}
+      api-base-url: https://graph.instagram.com
+      sync-cron: ${INSTAGRAM_SYNC_CRON:0 0 */6 * * *}
+  frontend:
+    base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
+  notifications:
+    booking-email-enabled: ${BOOKING_EMAIL_ENABLED:true}
+logging:
+  level:
+    com.nlc.backend: INFO

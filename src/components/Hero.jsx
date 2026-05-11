@@ -1,6 +1,6 @@
 import Button from "./ui/Button";
 
-export default function Hero() {
+export default function Hero({ onNavigate = () => {} }) {
   return (
     <section className="hero-section" id="home">
       <div className="container hero-section__inner">
@@ -10,11 +10,11 @@ export default function Hero() {
             Every gathering we host is a celebration of women&apos;s empowerment,
             fostering connections and friendships that last a lifetime.
           </p>
-          <Button>Join Community</Button>
+          <Button onClick={() => onNavigate("membership")}>Join Community</Button>
         </div>
 
         <div className="hero-logo">
-          <img src="/images/nlc-logo.png" alt="Nagpur Ladies Club logo" className="hero-logo__image" />
+          <img src="/images/hero-logo.png" alt="Nagpur Ladies Club logo" className="hero-logo__image" />
         </div>
       </div>
     </section>

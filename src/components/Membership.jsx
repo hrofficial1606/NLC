@@ -1,6 +1,6 @@
 import Button from "./ui/Button";
 
-export default function Membership({ membership }) {
+export default function Membership({ membership, onNavigate = () => {} }) {
   return (
     <section className="membership-section" id="membership">
       <div className="container membership-section__inner">
@@ -14,7 +14,9 @@ export default function Membership({ membership }) {
             {membership?.description ??
               "Join us in our mission to uplift women and foster a supportive community."}
           </p>
-          <Button className="membership-section__button">Get your Membership Now</Button>
+          <Button className="membership-section__button" onClick={() => onNavigate("membership")}>
+            Get your Membership Now
+          </Button>
         </div>
       </div>
     </section>
