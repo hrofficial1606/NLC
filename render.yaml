@@ -1,0 +1,70 @@
+services:
+  - type: web
+    name: nlc-backend
+    runtime: docker
+    rootDir: backend
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /api/actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: FRONTEND_BASE_URL
+        sync: false
+      - key: DB_URL
+        fromDatabase:
+          name: nlc-postgres
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: nlc-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nlc-postgres
+          property: password
+      - key: DB_DRIVER
+        value: org.postgresql.Driver
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_SMTP_AUTH
+        value: "true"
+      - key: MAIL_SMTP_STARTTLS
+        value: "true"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: INSTAGRAM_SYNC_ENABLED
+        value: "false"
+      - key: INSTAGRAM_ACCESS_TOKEN
+        sync: false
+      - key: INSTAGRAM_USER_ID
+        sync: false
+      - key: WHATSAPP_ENABLED
+        value: "false"
+      - key: WHATSAPP_API_BASE_URL
+        value: https://graph.facebook.com/v23.0
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_DEFAULT_COUNTRY_CODE
+        value: "91"
+      - key: WHATSAPP_ADMIN_RECIPIENT_NUMBER
+        sync: false
+databases:
+  - name: nlc-postgres
+    plan: starter

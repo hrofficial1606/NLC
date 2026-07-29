@@ -4,9 +4,15 @@ import java.math.BigDecimal;
 
 public record DashboardAnalyticsResponse(
         long totalUsers,
-        long totalBookings,
+        long totalEvents,
+        long upcomingEvents,
+        long totalRegistrations,
+        long pendingRegistrations,
+        long approvedRegistrations,
+        long rejectedRegistrations,
+        long totalMembers,
+        long galleryItems,
         BigDecimal totalRevenue,
-        long featuredEvents,
         long openInquiries
 ) {
 }

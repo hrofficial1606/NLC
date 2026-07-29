@@ -14,6 +14,7 @@ import AboutPage from "./components/AboutPage";
 import MembershipPage from "./components/MembershipPage";
 import RegisterPage from "./components/RegisterPage";
 import {
+  getCreatorProfile,
   getEvents,
   getMemberships,
   getSponsors,
@@ -50,19 +51,21 @@ export default function App() {
     memberships: [],
     testimonials: [],
     sponsors: [],
+    creator: null,
   });
   const [route, setRoute] = useState(() => getRouteFromLocation());
 
   useEffect(() => {
     async function loadContent() {
-      const [events, memberships, testimonials, sponsors] = await Promise.all([
+      const [events, memberships, testimonials, sponsors, creator] = await Promise.all([
         getEvents(),
         getMemberships(),
         getTestimonials(),
         getSponsors(),
+        getCreatorProfile(),
       ]);
 
-      setContent({ events, memberships, testimonials, sponsors });
+      setContent({ events, memberships, testimonials, sponsors, creator });
     }
 
     loadContent();
@@ -144,7 +147,7 @@ export default function App() {
             <SectionDivider />
             <Events event={content.events[0]} />
             <Membership membership={content.memberships[0]} onNavigate={handleNavigate} />
-            <Creator />
+            <Creator creator={content.creator} />
             <Feedback testimonials={content.testimonials} />
             <Sponsors sponsors={content.sponsors} />
           </main>

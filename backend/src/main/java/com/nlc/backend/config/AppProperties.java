@@ -17,7 +17,6 @@ public class AppProperties {
 
     private final Security security = new Security();
     private final Media media = new Media();
-    private final Payment payment = new Payment();
     private final Integrations integrations = new Integrations();
     private final Frontend frontend = new Frontend();
     private final Notifications notifications = new Notifications();
@@ -66,23 +65,9 @@ public class AppProperties {
 
     @Getter
     @Setter
-    public static class Payment {
-        private final Razorpay razorpay = new Razorpay();
-    }
-
-    @Getter
-    @Setter
-    public static class Razorpay {
-        private String keyId;
-        private String keySecret;
-        private String webhookSecret;
-        private String currency;
-    }
-
-    @Getter
-    @Setter
     public static class Integrations {
         private final Instagram instagram = new Instagram();
+        private final Whatsapp whatsapp = new Whatsapp();
     }
 
     @Getter
@@ -93,6 +78,17 @@ public class AppProperties {
         private String userId;
         private String apiBaseUrl;
         private String syncCron;
+    }
+
+    @Getter
+    @Setter
+    public static class Whatsapp {
+        private boolean enabled;
+        private String apiBaseUrl;
+        private String accessToken;
+        private String phoneNumberId;
+        private String defaultCountryCode;
+        private String adminRecipientNumber;
     }
 
     @Getter

@@ -1209,13 +1209,23 @@ button {
   align-items: start;
 }
 
-.creator-section__blob {
+.creator-section__photo-frame {
   width: 100%;
-  max-width: 640px;
-  aspect-ratio: 1.1 / 0.9;
-  background: #e6c0f0;
-  border-radius: 47% 53% 43% 57% / 38% 33% 67% 62%;
+  max-width: 540px;
+  aspect-ratio: 0.92;
+  background: linear-gradient(145deg, #f6d8eb 0%, #ebc1e5 100%);
+  border-radius: 36px;
+  padding: 16px;
+  box-shadow: 0 22px 60px rgba(137, 56, 146, 0.16);
   margin-bottom: 18px;
+}
+
+.creator-section__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  object-fit: cover;
 }
 
 .creator-section__identity {

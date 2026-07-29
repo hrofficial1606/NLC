@@ -43,9 +43,15 @@ CREATE TABLE events (
     ticket_price NUMERIC(12,2) NOT NULL,
     total_seats INTEGER NOT NULL,
     available_seats INTEGER NOT NULL,
+    registration_enabled BOOLEAN NOT NULL,
+    paid_event BOOLEAN NOT NULL,
     featured BOOLEAN NOT NULL,
     available BOOLEAN NOT NULL,
     banner_image_url VARCHAR(255),
+    qr_image_url VARCHAR(500),
+    upi_id VARCHAR(120),
+    payment_instructions VARCHAR(1000),
+    registration_deadline TIMESTAMP,
     status VARCHAR(32) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
@@ -59,22 +65,14 @@ CREATE TABLE bookings (
     quantity INTEGER NOT NULL,
     total_amount NUMERIC(12,2) NOT NULL,
     status VARCHAR(32) NOT NULL,
-    qr_code_url VARCHAR(500),
+    payment_screenshot_url VARCHAR(600),
+    payment_screenshot_public_id VARCHAR(255),
+    submitted_at TIMESTAMP,
+    reviewed_at TIMESTAMP,
+    reviewed_by BIGINT REFERENCES users(id),
+    rejection_reason VARCHAR(1000),
+    admin_note VARCHAR(1000),
     attendee_notes VARCHAR(1000),
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE payment_transactions (
-    id BIGSERIAL PRIMARY KEY,
-    order_id VARCHAR(120) NOT NULL UNIQUE,
-    payment_id VARCHAR(120) UNIQUE,
-    signature VARCHAR(255),
-    amount NUMERIC(12,2) NOT NULL,
-    currency VARCHAR(8) NOT NULL,
-    status VARCHAR(32) NOT NULL,
-    receipt_url VARCHAR(1000),
-    booking_id BIGINT NOT NULL REFERENCES bookings(id),
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );

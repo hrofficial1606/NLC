@@ -34,7 +34,7 @@ spring:
             enable: ${MAIL_SMTP_STARTTLS:false}
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:${PORT:8080}}
   servlet:
     context-path: /api
 
@@ -60,7 +60,7 @@ app:
       refresh-token-expiration-days: 14
     cors:
       allowed-origins:
-        - http://localhost:5173
+        - ${FRONTEND_BASE_URL:http://localhost:5173}
         - http://localhost:3000
   media:
     provider: CLOUDINARY
@@ -68,12 +68,6 @@ app:
       cloud-name: ${CLOUDINARY_CLOUD_NAME:}
       api-key: ${CLOUDINARY_API_KEY:}
       api-secret: ${CLOUDINARY_API_SECRET:}
-  payment:
-    razorpay:
-      key-id: ${RAZORPAY_KEY_ID:}
-      key-secret: ${RAZORPAY_KEY_SECRET:}
-      webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:}
-      currency: INR
   integrations:
     instagram:
       enabled: ${INSTAGRAM_SYNC_ENABLED:false}
@@ -81,6 +75,13 @@ app:
       user-id: ${INSTAGRAM_USER_ID:}
       api-base-url: https://graph.instagram.com
       sync-cron: ${INSTAGRAM_SYNC_CRON:0 0 */6 * * *}
+    whatsapp:
+      enabled: ${WHATSAPP_ENABLED:false}
+      api-base-url: ${WHATSAPP_API_BASE_URL:https://graph.facebook.com/v23.0}
+      access-token: ${WHATSAPP_ACCESS_TOKEN:}
+      phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+      default-country-code: ${WHATSAPP_DEFAULT_COUNTRY_CODE:91}
+      admin-recipient-number: ${WHATSAPP_ADMIN_RECIPIENT_NUMBER:}
   frontend:
     base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
   notifications:

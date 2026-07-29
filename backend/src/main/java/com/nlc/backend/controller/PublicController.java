@@ -8,10 +8,12 @@ import com.nlc.backend.dto.contact.ContactInquiryRequest;
 import com.nlc.backend.dto.contact.ContactInquiryResponse;
 import com.nlc.backend.dto.event.EventResponse;
 import com.nlc.backend.dto.gallery.GalleryMediaResponse;
+import com.nlc.backend.dto.sponsor.SponsorResponse;
 import com.nlc.backend.service.CmsService;
 import com.nlc.backend.service.ContactService;
 import com.nlc.backend.service.EventService;
 import com.nlc.backend.service.GalleryService;
+import com.nlc.backend.service.SponsorService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class PublicController {
     private final GalleryService galleryService;
     private final CmsService cmsService;
     private final ContactService contactService;
+    private final SponsorService sponsorService;
 
     @GetMapping("/events")
     public ApiResponse<PageResponse<EventResponse>> events(
@@ -39,6 +42,11 @@ public class PublicController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search) {
         return ApiResponse.success("Events fetched", eventService.getPublicEvents(page, size, search));
+    }
+
+    @GetMapping("/events/upcoming")
+    public ApiResponse<EventResponse> upcomingEvent() {
+        return ApiResponse.success("Upcoming event fetched", eventService.getUpcomingHighlight());
     }
 
     @GetMapping("/events/{id}")
@@ -51,6 +59,11 @@ public class PublicController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
         return ApiResponse.success("Gallery fetched", galleryService.list(page, size));
+    }
+
+    @GetMapping("/sponsors")
+    public ApiResponse<List<SponsorResponse>> sponsors() {
+        return ApiResponse.success("Sponsors fetched", sponsorService.getPublicSponsors());
     }
 
     @GetMapping("/about/content")

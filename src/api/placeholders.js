@@ -1,4 +1,10 @@
-import { mockEvents, mockMemberships, mockSponsors, mockTestimonials } from "../data/mockData";
+import {
+  mockCreator,
+  mockEvents,
+  mockMemberships,
+  mockSponsors,
+  mockTestimonials,
+} from "../data/mockData";
 
 function simulateApi(data) {
   return new Promise((resolve) => {
@@ -20,4 +26,8 @@ export function getTestimonials() {
 
 export function getSponsors() {
   return simulateApi(mockSponsors);
+}
+
+export function getCreatorProfile() {
+  return simulateApi(mockCreator);
 }

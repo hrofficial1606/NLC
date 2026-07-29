@@ -40,8 +40,7 @@ public class SecurityConfig {
                                 "/docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/actuator/health",
-                                "/payments/webhook"
+                                "/actuator/health"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")

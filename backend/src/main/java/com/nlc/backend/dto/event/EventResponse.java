@@ -14,9 +14,15 @@ public record EventResponse(
         BigDecimal ticketPrice,
         Integer totalSeats,
         Integer availableSeats,
+        boolean registrationEnabled,
+        boolean paidEvent,
         boolean featured,
         boolean available,
         String bannerImageUrl,
+        String qrImageUrl,
+        String upiId,
+        String paymentInstructions,
+        LocalDateTime registrationDeadline,
         String status
 ) {
 }

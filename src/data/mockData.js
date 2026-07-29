@@ -16,6 +16,15 @@ export const mockMemberships = [
   },
 ];
 
+export const mockCreator = {
+  id: 1,
+  name: "Soniya Parmar",
+  designation: "Owner - Founder - Event Organizer",
+  bio:
+    "A dynamic entrepreneur, event organizer, and the founder of Nagpur Ladies Club, known for her strong vision of women empowerment. Based in Nagpur, she has built a vibrant community connecting over 160 women entrepreneurs and creating opportunities for growth and networking.",
+  imageUrl: "/images/image.png",
+};
+
 export const mockTestimonials = [
   { id: 1, name: "", quote: "" },
   { id: 2, name: "", quote: "" },

@@ -13,7 +13,6 @@ Production-ready Spring Boot backend for the Nagpur Ladies Club event management
 - Lombok
 - Swagger / OpenAPI
 - Cloudinary media storage
-- Razorpay payment integration
 - Scheduler / async jobs
 
 ## Features
@@ -21,9 +20,12 @@ Production-ready Spring Boot backend for the Nagpur Ladies Club event management
 - Authentication: register, login, refresh token, logout, email verification, forgot/reset password
 - Role-based access: `ADMIN`, `USER`
 - Event CRUD and public listing
-- Ticket booking with QR code generation
-- Razorpay order + verification flow
+- Event registration with QR instructions and payment proof workflow
+- Admin approval / rejection for paid registrations
 - Gallery management + Instagram sync hook
+- Sponsor management APIs
+- Member card issuance and retrieval
+- WhatsApp registration / booking / member card alerts
 - About page / team CMS
 - Contact inquiry management
 - Admin dashboard analytics
@@ -87,9 +89,6 @@ Change this immediately in production.
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
-- `RAZORPAY_KEY_ID`
-- `RAZORPAY_KEY_SECRET`
-- `RAZORPAY_WEBHOOK_SECRET`
 - `INSTAGRAM_ACCESS_TOKEN`
 - `INSTAGRAM_USER_ID`
 - `FRONTEND_BASE_URL`
@@ -99,10 +98,6 @@ Change this immediately in production.
 ### Cloudinary
 
 The backend uses `CloudinaryMediaStorageService` for media uploads and deletions. Replace or extend this service if you prefer AWS S3.
-
-### Razorpay
-
-Order creation and verification are implemented in `PaymentServiceImpl`. Add stricter signature verification and webhook reconciliation before production launch.
 
 ### Instagram Sync
 
@@ -114,7 +109,13 @@ Order creation and verification are implemented in `PaymentServiceImpl`. Add str
 - `/public/**`
 - `/user/**`
 - `/admin/**`
-- `/payments/**`
+
+Additional admin/public APIs added:
+
+- `/admin/sponsors`
+- `/public/sponsors`
+- `/admin/member-cards`
+- `/user/member-card`
 
 ## Production Hardening Checklist
 
@@ -122,11 +123,17 @@ Order creation and verification are implemented in `PaymentServiceImpl`. Add str
 - Replace placeholder email bodies with branded HTML templates
 - Add Redis-backed rate limiting and caching
 - Add request tracing and centralized logging
-- Verify Razorpay webhooks cryptographically
 - Implement full Instagram Graph API fetch and token refresh
-- Store generated invoices/receipts in object storage
+- Store registration proof/media assets in object storage with lifecycle rules
 - Add integration and controller tests
 
 ## Frontend Integration
 
 The backend already uses DTO-based REST responses that are ready to consume from your existing React frontend.
+
+## Deployment Files
+
+- Render service blueprint: [../render.yaml](../render.yaml)
+- Render env template: [deploy/render.env.example](deploy/render.env.example)
+- Hostinger VPS compose stack: [deploy/hostinger/docker-compose.yml](deploy/hostinger/docker-compose.yml)
+- Hostinger setup notes: [deploy/hostinger/DEPLOY.md](deploy/hostinger/DEPLOY.md)

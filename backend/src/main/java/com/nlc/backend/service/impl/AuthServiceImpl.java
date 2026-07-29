@@ -25,6 +25,8 @@ import com.nlc.backend.security.JwtService;
 import com.nlc.backend.security.UserPrincipal;
 import com.nlc.backend.service.AuthService;
 import com.nlc.backend.service.EmailService;
+import com.nlc.backend.service.NotificationService;
+import com.nlc.backend.service.WhatsAppService;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -49,6 +51,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final NotificationService notificationService;
+    private final WhatsAppService whatsAppService;
 
     @Override
     @Transactional
@@ -79,6 +83,9 @@ public class AuthServiceImpl implements AuthService {
         verificationTokenRepository.save(verificationToken);
 
         emailService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
+        notificationService.notifyUser(user.getId(), "Registration successful",
+                "Welcome to Nagpur Ladies Club. Please verify your email to activate your account.", "USER_REGISTERED");
+        whatsAppService.sendRegistrationConfirmation(user);
 
         return issueTokens(user);
     }

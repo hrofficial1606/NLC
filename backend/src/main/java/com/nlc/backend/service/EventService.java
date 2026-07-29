@@ -9,6 +9,7 @@ public interface EventService {
     EventResponse update(Long id, EventRequest request);
     void delete(Long id);
     EventResponse getById(Long id);
+    EventResponse getUpcomingHighlight();
     PageResponse<EventResponse> getPublicEvents(int page, int size, String search);
     PageResponse<EventResponse> getAdminEvents(int page, int size, String search);
 }

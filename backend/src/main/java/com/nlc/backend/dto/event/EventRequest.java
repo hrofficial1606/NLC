@@ -18,9 +18,15 @@ public record EventRequest(
         @NotBlank @Size(max = 180) String location,
         @NotNull @DecimalMin("0.0") BigDecimal ticketPrice,
         @NotNull @Min(0) Integer totalSeats,
+        boolean registrationEnabled,
+        boolean paidEvent,
         boolean featured,
         boolean available,
         String bannerImageUrl,
+        String qrImageUrl,
+        @Size(max = 120) String upiId,
+        @Size(max = 1000) String paymentInstructions,
+        LocalDateTime registrationDeadline,
         String status
 ) {
 }

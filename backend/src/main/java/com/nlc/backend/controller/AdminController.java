@@ -1,6 +1,7 @@
 package com.nlc.backend.controller;
 
 import com.nlc.backend.dto.booking.BookingResponse;
+import com.nlc.backend.dto.booking.BookingReviewRequest;
 import com.nlc.backend.dto.cms.AboutContentRequest;
 import com.nlc.backend.dto.cms.AboutContentResponse;
 import com.nlc.backend.dto.cms.TeamMemberRequest;
@@ -13,8 +14,13 @@ import com.nlc.backend.dto.event.EventRequest;
 import com.nlc.backend.dto.event.EventResponse;
 import com.nlc.backend.dto.gallery.GalleryMediaRequest;
 import com.nlc.backend.dto.gallery.GalleryMediaResponse;
+import com.nlc.backend.dto.membercard.MemberCardRequest;
+import com.nlc.backend.dto.membercard.MemberCardResponse;
+import com.nlc.backend.dto.sponsor.SponsorRequest;
+import com.nlc.backend.dto.sponsor.SponsorResponse;
 import com.nlc.backend.dto.user.UserResponse;
 import com.nlc.backend.entity.User;
+import com.nlc.backend.repository.MemberCardRepository;
 import com.nlc.backend.repository.UserRepository;
 import com.nlc.backend.service.BookingService;
 import com.nlc.backend.service.CmsService;
@@ -22,11 +28,14 @@ import com.nlc.backend.service.ContactService;
 import com.nlc.backend.service.DashboardService;
 import com.nlc.backend.service.EventService;
 import com.nlc.backend.service.GalleryService;
+import com.nlc.backend.service.MemberCardService;
+import com.nlc.backend.service.SponsorService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.nlc.backend.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/admin")
@@ -51,6 +61,9 @@ public class AdminController {
     private final DashboardService dashboardService;
     private final BookingService bookingService;
     private final UserRepository userRepository;
+    private final SponsorService sponsorService;
+    private final MemberCardService memberCardService;
+    private final MemberCardRepository memberCardRepository;
 
     @GetMapping("/dashboard")
     public ApiResponse<DashboardAnalyticsResponse> dashboard() {
@@ -86,6 +99,27 @@ public class AdminController {
         return ApiResponse.success("Users fetched", result);
     }
 
+    @PostMapping("/sponsors")
+    public ApiResponse<SponsorResponse> createSponsor(@Valid @RequestBody SponsorRequest request) {
+        return ApiResponse.success("Sponsor created", sponsorService.create(request));
+    }
+
+    @PutMapping("/sponsors/{id}")
+    public ApiResponse<SponsorResponse> updateSponsor(@PathVariable Long id, @Valid @RequestBody SponsorRequest request) {
+        return ApiResponse.success("Sponsor updated", sponsorService.update(id, request));
+    }
+
+    @DeleteMapping("/sponsors/{id}")
+    public ApiResponse<Void> deleteSponsor(@PathVariable Long id) {
+        sponsorService.delete(id);
+        return ApiResponse.success("Sponsor deleted", null);
+    }
+
+    @GetMapping("/sponsors")
+    public ApiResponse<List<SponsorResponse>> sponsors() {
+        return ApiResponse.success("Sponsors fetched", sponsorService.getAdminSponsors());
+    }
+
     @PatchMapping("/users/{id}/block")
     public ApiResponse<Void> blockUser(@PathVariable Long id) {
         userRepository.findById(id).ifPresent(user -> {
@@ -111,8 +145,24 @@ public class AdminController {
     }
 
     @GetMapping("/bookings")
-    public ApiResponse<List<BookingResponse>> bookings() {
-        return ApiResponse.success("Bookings fetched", bookingService.getAllBookings());
+    public ApiResponse<List<BookingResponse>> bookings(@RequestParam(required = false) String status) {
+        return ApiResponse.success("Bookings fetched", bookingService.getAllBookings(status));
+    }
+
+    @PatchMapping("/bookings/{id}/approve")
+    public ApiResponse<BookingResponse> approveBooking(@PathVariable Long id,
+                                                       @AuthenticationPrincipal UserPrincipal principal,
+                                                       @RequestBody(required = false) BookingReviewRequest request) {
+        return ApiResponse.success("Registration approved",
+                bookingService.approveBooking(id, principal.getId(), request));
+    }
+
+    @PatchMapping("/bookings/{id}/reject")
+    public ApiResponse<BookingResponse> rejectBooking(@PathVariable Long id,
+                                                      @AuthenticationPrincipal UserPrincipal principal,
+                                                      @Valid @RequestBody BookingReviewRequest request) {
+        return ApiResponse.success("Registration rejected",
+                bookingService.rejectBooking(id, principal.getId(), request));
     }
 
     @PostMapping("/gallery")
@@ -181,6 +231,27 @@ public class AdminController {
         return ApiResponse.success("Inquiry marked resolved", null);
     }
 
+    @PostMapping("/member-cards")
+    public ApiResponse<MemberCardResponse> issueMemberCard(@Valid @RequestBody MemberCardRequest request) {
+        return ApiResponse.success("Member card issued", memberCardService.issueCard(request));
+    }
+
+    @PutMapping("/member-cards/{id}")
+    public ApiResponse<MemberCardResponse> updateMemberCard(@PathVariable Long id,
+                                                            @Valid @RequestBody MemberCardRequest request) {
+        return ApiResponse.success("Member card updated", memberCardService.updateCard(id, request));
+    }
+
+    @GetMapping("/member-cards")
+    public ApiResponse<List<MemberCardResponse>> memberCards() {
+        return ApiResponse.success("Member cards fetched", memberCardService.getAllCards());
+    }
+
+    @GetMapping("/member-cards/user/{userId}")
+    public ApiResponse<MemberCardResponse> memberCardByUser(@PathVariable Long userId) {
+        return ApiResponse.success("Member card fetched", memberCardService.getCardByUserId(userId));
+    }
+
     private UserResponse toUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
@@ -191,6 +262,7 @@ public class AdminController {
                 user.getProfession(),
                 user.isBlocked(),
                 user.isEmailVerified(),
+                memberCardRepository.findByUserId(user.getId()).isPresent(),
                 user.getRoles().stream().map(role -> role.getName().name()).collect(Collectors.toSet()),
                 user.getCreatedAt()
         );

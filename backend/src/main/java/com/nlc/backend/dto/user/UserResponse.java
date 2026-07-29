@@ -12,6 +12,7 @@ public record UserResponse(
         String profession,
         boolean blocked,
         boolean emailVerified,
+        boolean memberCardIssued,
         Set<String> roles,
         LocalDateTime createdAt
 ) {

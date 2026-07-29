@@ -50,6 +50,12 @@ public class Event extends AuditableEntity {
     private Integer availableSeats = 0;
 
     @Column(nullable = false)
+    private boolean registrationEnabled = true;
+
+    @Column(nullable = false)
+    private boolean paidEvent = false;
+
+    @Column(nullable = false)
     private boolean featured = false;
 
     @Column(nullable = false)
@@ -57,6 +63,17 @@ public class Event extends AuditableEntity {
 
     @Column(length = 255)
     private String bannerImageUrl;
+
+    @Column(length = 500)
+    private String qrImageUrl;
+
+    @Column(length = 120)
+    private String upiId;
+
+    @Column(length = 1000)
+    private String paymentInstructions;
+
+    private LocalDateTime registrationDeadline;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)

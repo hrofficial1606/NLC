@@ -11,7 +11,12 @@ public record BookingResponse(
         Integer quantity,
         BigDecimal totalAmount,
         String status,
-        String qrCodeUrl,
+        boolean paidEvent,
+        String paymentScreenshotUrl,
+        String rejectionReason,
+        String adminNote,
+        LocalDateTime submittedAt,
+        LocalDateTime reviewedAt,
         LocalDateTime createdAt
 ) {
 }
