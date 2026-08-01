@@ -51,6 +51,14 @@ springdoc:
     path: /swagger-ui.html
 
 app:
+  storage:
+    provider: ${APP_STORAGE_PROVIDER:SUPABASE}
+    supabase:
+      url: ${SUPABASE_URL:}
+      service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
+      public-bucket: ${SUPABASE_PUBLIC_BUCKET:nlc-public}
+      private-bucket: ${SUPABASE_PRIVATE_BUCKET:nlc-private}
+      signed-url-ttl-seconds: ${SUPABASE_SIGNED_URL_TTL:300}
   security:
     jwt:
       issuer: nlc-event-management
@@ -62,12 +70,6 @@ app:
       allowed-origins:
         - ${FRONTEND_BASE_URL:http://localhost:5173}
         - http://localhost:3000
-  media:
-    provider: CLOUDINARY
-    cloudinary:
-      cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-      api-key: ${CLOUDINARY_API_KEY:}
-      api-secret: ${CLOUDINARY_API_SECRET:}
   integrations:
     instagram:
       enabled: ${INSTAGRAM_SYNC_ENABLED:false}

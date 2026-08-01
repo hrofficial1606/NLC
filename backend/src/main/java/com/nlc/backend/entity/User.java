@@ -73,5 +73,6 @@ public class User extends AuditableEntity {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Booking> bookings;
 }

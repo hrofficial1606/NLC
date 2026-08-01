@@ -1,6 +1,7 @@
 package com.nlc.backend;
 
 import com.nlc.backend.config.AppProperties;
+import com.nlc.backend.config.StorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableConfigurationProperties(AppProperties.class)
+@EnableConfigurationProperties({AppProperties.class, StorageProperties.class})
 public class EventManagementBackendApplication {
 
     public static void main(String[] args) {
