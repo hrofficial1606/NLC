@@ -12,9 +12,7 @@ services:
       - key: FRONTEND_BASE_URL
         sync: false
       - key: DB_URL
-        fromDatabase:
-          name: nlc-postgres
-          property: connectionString
+        value: jdbc:postgresql://postgres:5432/nlc_db
       - key: DB_USERNAME
         fromDatabase:
           name: nlc-postgres
@@ -25,10 +23,26 @@ services:
           property: password
       - key: DB_DRIVER
         value: org.postgresql.Driver
+      - key: DB_POOL_MAX
+        value: "10"
+      - key: DB_POOL_MIN
+        value: "2"
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
         generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_PUBLIC_BUCKET
+        value: nlc-public
+      - key: SUPABASE_PRIVATE_BUCKET
+        value: nlc-private
+      - key: SUPABASE_SIGNED_URL_TTL
+        value: "300"
+      - key: APP_STORAGE_PROVIDER
+        value: SUPABASE
       - key: MAIL_HOST
         sync: false
       - key: MAIL_PORT
@@ -41,12 +55,8 @@ services:
         value: "true"
       - key: MAIL_SMTP_STARTTLS
         value: "true"
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
+      - key: BOOKING_EMAIL_ENABLED
+        value: "false"
       - key: INSTAGRAM_SYNC_ENABLED
         value: "false"
       - key: INSTAGRAM_ACCESS_TOKEN

@@ -11,8 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
  *   - PRIVATE_BUCKET (nlc-private): payment screenshots
  *
  * The current implementation delegates to {@link com.nlc.backend.config.SupabaseStorageClient}.
- * The original {@link MediaStorageService} (Cloudinary) remains in place as a
- * deploy-time fallback and is expected to be removed once Supabase runs in prod.
  */
 public interface StorageService {
 

@@ -1,1189 +1,107 @@
-# NAGPUR LADIES CLUB — MASTER PHASE 2 COMPLETION + SUPABASE MIGRATION PROMPT
+# CONTINUE NAGPUR LADIES CLUB PROJECT — DO NOT RESTART
 
-You are continuing development of my EXISTING **Nagpur Ladies Club (NLC)** application.
+You are continuing the existing Nagpur Ladies Club repository.
 
-You are acting as:
+DO NOT repeat the inspection phase.
 
-* Senior React Developer
-* Senior Spring Boot Developer
-* PostgreSQL/Supabase Engineer
-* Software Architect
-* Security Engineer
-* QA Engineer
-* DevOps Engineer
+DO NOT recreate APIs.
 
-Your objective is to take the CURRENT partially completed repository and turn it into a complete, integrated, secure, maintainable application.
+DO NOT recreate authentication.
 
-This is NOT a new project.
+DO NOT recreate the React API layer.
 
-DO NOT recreate the application from scratch.
+DO NOT recreate the admin pages.
 
-DO NOT repeat work that is already complete.
+Continue from the CURRENT repository state.
 
-DO NOT destroy working backend functionality.
+The previous execution stopped only because the AI session reached its usage limit.
 
-DO NOT create duplicate models, authentication systems, APIs, admin panels, or database layers.
-
-FIRST inspect the existing repository and the previous audit/status documents.
-
-THEN migrate the persistence/storage architecture to Supabase.
-
-THEN complete the React frontend.
-
-THEN complete the React admin panel.
-
-THEN integrate everything.
-
-THEN test complete workflows.
-
-THEN build the project.
-
-THEN update documentation and report the real completion percentage.
-
-DO NOT STOP AFTER ANALYSIS.
-
-DO NOT STOP AFTER DATABASE MIGRATION.
-
-DO NOT ASK WHETHER TO CONTINUE.
-
-Continue until all technically possible work in this scope is completed.
+Assume all files already created in the repository are the source of truth.
 
 ---
 
-# 1. READ EXISTING PROJECT STATUS FIRST
+# FIRST
 
-Before changing code, read:
+Inspect the current repository and determine what has already been implemented.
 
-PROJECT_AUDIT.md
+Do NOT overwrite working code.
 
-PROJECT_STATUS.md
-
-Then inspect the current repository.
-
-The previous implementation already completed or partially completed important backend work.
-
-Preserve verified working functionality.
-
-The previous status was approximately:
-
-Overall: 43%
-
-Frontend: 18%
-
-Backend: 73%
-
-Admin Panel: 34%
-
-Database/Integration: 58%
-
-Do NOT treat these percentages as current after your work.
-
-They are the starting point.
-
-Recalculate them at the end based on actual verified functionality.
+If two implementations exist, keep the better one and remove obsolete code.
 
 ---
 
-# 2. CURRENT KNOWN STATE
+# VERIFY THE FOLLOWING
 
-Previous work already included backend support for:
+Backend
 
-* Spring Boot backend
-* JWT authentication architecture
-* Admin role protection
-* Event functionality
-* Manual QR-based event registration
-* Paid/free event settings
-* Event QR configuration fields
-* UPI/payment instruction fields
-* Registration deadline
-* Screenshot proof submission
-* Screenshot MIME/size validation
-* PENDING registration status
-* APPROVED status
-* REJECTED status
-* Admin approve API
-* Admin reject API
-* Rejection reason
-* Duplicate registration prevention
-* Rejected registration resubmission logic
-* Dashboard registration/event/member/gallery counts
-* Backend package/build passing
-* Frontend production build passing
+* Spring Boot starts correctly
+* JWT authentication works
+* Supabase PostgreSQL connection works
+* Supabase Storage service works
+* Storage adapter works
+* Booking workflow works
+* Event CRUD works
+* Gallery CRUD works
+* Member CRUD works
 
-Razorpay/payment gateway backend functionality has already been removed.
+Frontend
 
-DO NOT reintroduce it.
+* React Router is correctly wired
+* AuthContext is working
+* Login/Register pages work
+* Protected routes work
+* Admin routes work
+* Public routes work
+* Navbar works
+* Logout works
 
----
+API Layer
 
-# 3. CURRENT MAJOR GAPS
+Verify every API module:
 
-The previous audit identified these major remaining problems:
+client.js
 
-1. React frontend is still largely incomplete/integrated only partially.
+authApi.js
 
-2. No complete real React Admin Panel.
+eventApi.js
 
-3. No complete Login/Register/Logout/session frontend.
+registrationApi.js
 
-4. Public events still contain static/mock behavior.
+galleryApi.js
 
-5. Event details are not fully backend-driven.
+memberApi.js
 
-6. QR registration frontend is incomplete.
+contentApi.js
 
-7. Screenshot upload frontend is incomplete.
+adminApi.js
 
-8. My Registrations is missing/incomplete.
+Ensure endpoints exactly match backend controllers.
 
-9. Registration status frontend is incomplete.
-
-10. Admin screenshot verification UI is missing/incomplete.
-
-11. Gallery is partially database-driven.
-
-12. Members are partially database-driven.
-
-13. About content is partially database-driven.
-
-14. Frontend contains mock data/placeholders.
-
-15. Instagram integration requires external configuration.
-
-16. No full browser-tested end-to-end user/admin workflow.
-
-17. Database migration strategy needs improvement.
-
-18. Existing storage architecture must be migrated to Supabase Storage where appropriate.
-
-Fix all technically possible items.
+Fix mismatches.
 
 ---
 
-# 4. TARGET TECHNOLOGY ARCHITECTURE
+# COMPLETE ROUTER INTEGRATION
 
-The final application should use:
+Wire every page into App.jsx / router.
 
-## Frontend
+Ensure these routes exist:
 
-React
+/
 
-Use the existing React project and its existing build tooling.
+/about
 
-Do not create another frontend.
+/events
 
-## Backend
+/events/:id
 
-Spring Boot
+/gallery
 
-Spring Security
+/login
 
-JWT Authentication
+/register
 
-Spring Data JPA
-
-Hibernate
-
-## Database
-
-Supabase PostgreSQL
-
-## File Storage
-
-Supabase Storage
-
-## Registration Payment Process
-
-Manual QR Payment
-
-*
-
-Payment Screenshot Upload
-
-*
-
-Admin Verification
-
-NO automatic payment gateway.
-
----
-
-# 5. FINAL APPLICATION ARCHITECTURE
-
-Target architecture:
-
-React Frontend
-|
-| HTTPS REST API
-v
-Spring Boot Backend
-|
-+-----------------------------+
-|                             |
-v                             v
-Supabase PostgreSQL           Supabase Storage
-|                             |
-|                             |
-Users                         Event Images
-Events                        Event QR Codes
-Registrations                 Payment Screenshots
-Gallery Metadata              Gallery Images
-Members                       Member Photos
-Website Content               Other required uploads
-
-Authentication:
-
-React
--> Spring Boot
--> JWT
--> Spring Security
--> User stored in Supabase PostgreSQL
-
-Do NOT make React directly perform core application database operations against Supabase.
-
-React should use Spring Boot APIs.
-
----
-
-# 6. IMPORTANT — DO NOT MIGRATE AUTH TO SUPABASE AUTH
-
-Do NOT automatically replace the existing Spring Security/JWT authentication with Supabase Auth.
-
-Keep:
-
-Spring Boot JWT
-
-Spring Security
-
-ROLE_USER
-
-ROLE_ADMIN
-
-unless the current implementation is fundamentally broken.
-
-Supabase is being introduced primarily for:
-
-PostgreSQL Database
-
-*
-
-Storage
-
-We should NOT have two competing authentication systems.
-
----
-
-# 7. FIRST EXECUTION STEP — COMPLETE REPOSITORY INSPECTION
-
-Inspect:
-
-frontend
-
-backend
-
-pom.xml
-
-package.json
-
-application.yml
-
-.env examples
-
-controllers
-
-services
-
-service implementations
-
-repositories
-
-entities
-
-DTOs
-
-security
-
-JWT implementation
-
-routes
-
-React Router
-
-components
-
-pages
-
-API utilities
-
-mock data
-
-storage implementation
-
-schema.sql
-
-deployment configuration
-
-README
-
-PROJECT_AUDIT.md
-
-PROJECT_STATUS.md
-
-Search for:
-
-TODO
-
-FIXME
-
-mock
-
-dummy
-
-sample
-
-placeholder
-
-temporary
-
-hardcoded
-
-Razorpay
-
-Stripe
-
-PayPal
-
-Cloudinary
-
-AWS
-
-local uploads
-
-Supabase
-
-MongoDB
-
-MySQL
-
-H2
-
-PostgreSQL
-
-Do not make large changes until you understand the current architecture.
-
----
-
-# 8. CREATE CURRENT API MAP
-
-Inspect:
-
-AdminController
-
-UserController
-
-PublicController
-
-and every other controller.
-
-Map the APIs needed by frontend.
-
-For each API determine:
-
-HTTP METHOD
-
-PATH
-
-AUTH REQUIRED
-
-ROLE REQUIRED
-
-REQUEST FORMAT
-
-RESPONSE FORMAT
-
-FRONTEND CONSUMER
-
-Examples:
-
-Authentication
-
-Events
-
-Registrations
-
-Admin Dashboard
-
-Admin Events
-
-Admin Registrations
-
-Gallery
-
-Members
-
-Content
-
-Uploads
-
-Do NOT create duplicate APIs where working ones already exist.
-
-If a required API is missing, implement it.
-
----
-
-# 9. MIGRATE PRIMARY DATABASE TO SUPABASE POSTGRESQL
-
-Use Supabase PostgreSQL as the primary application database.
-
-Spring Boot connects to Supabase PostgreSQL.
-
-Use the existing:
-
-Spring Data JPA
-
-Hibernate
-
-Repositories
-
-Entities
-
-Services
-
-where possible.
-
-Supabase PostgreSQL is PostgreSQL.
-
-Do not rewrite repositories just because the PostgreSQL server is hosted by Supabase.
-
----
-
-# 10. DATABASE CONFIGURATION
-
-Configure Spring Boot using environment variables.
-
-Do NOT hardcode:
-
-Supabase URL
-
-database password
-
-database username
-
-service role key
-
-JWT secret
-
-storage credentials
-
-inside source code.
-
-Use environment variables.
-
-Create/update:
-
-backend/.env.example
-
-with names only.
-
-Possible variables depending on implementation:
-
-DATABASE_URL=
-
-DB_USERNAME=
-
-DB_PASSWORD=
-
-SUPABASE_URL=
-
-SUPABASE_SERVICE_ROLE_KEY=
-
-SUPABASE_STORAGE_BUCKET_PUBLIC=
-
-SUPABASE_STORAGE_BUCKET_PRIVATE=
-
-JWT_SECRET=
-
-Use only variables actually needed.
-
-Never put real secrets into `.env.example`.
-
----
-
-# 11. DATABASE CONNECTION POOL
-
-Use HikariCP appropriately.
-
-Do not create excessive database connections.
-
-Consider Supabase deployment/connection limits.
-
-If the deployed application should use Supabase's PostgreSQL pooler, configure the appropriate pooled JDBC connection.
-
-Use sensible:
-
-maximumPoolSize
-
-minimumIdle
-
-connectionTimeout
-
-idleTimeout
-
-maxLifetime
-
-Do not blindly set huge values.
-
----
-
-# 12. DATABASE ENTITIES
-
-Inspect existing entities.
-
-Use existing entity/model names.
-
-The application should persist data equivalent to:
-
-User
-
-Event
-
-Booking/EventRegistration
-
-Gallery
-
-Member
-
-Website Content
-
-and legitimate supporting entities.
-
-Do NOT create duplicates such as:
-
-Booking + Registration + EventRegistration
-
-if Booking already represents registration.
-
-Extend the existing entity instead.
-
----
-
-# 13. USER DATA
-
-Persist users in Supabase PostgreSQL.
-
-Keep existing password hashing.
-
-Never store plaintext passwords.
-
-User should support existing fields such as:
-
-id
-
-name
-
-email
-
-password hash
-
-role
-
-timestamps
-
-Use existing entity structure.
-
-Ensure email uniqueness.
-
----
-
-# 14. EVENT DATA
-
-Persist events in Supabase PostgreSQL.
-
-Existing Event functionality should support where applicable:
-
-id
-
-title
-
-description
-
-image
-
-location
-
-date
-
-time
-
-registration enabled
-
-free/paid
-
-registration fee
-
-QR image
-
-UPI ID
-
-payment instructions
-
-registration deadline
-
-capacity
-
-publication/status
-
-timestamps
-
-Use actual existing field names.
-
----
-
-# 15. REGISTRATION DATA
-
-Reuse existing Booking/registration entity.
-
-Registration should support conceptually:
-
-id
-
-user
-
-event
-
-amount
-
-paymentScreenshot
-
-status
-
-submittedAt
-
-reviewedAt
-
-reviewedBy
-
-rejectionReason
-
-adminNote
-
-timestamps
-
-Statuses:
-
-PENDING
-
-APPROVED
-
-REJECTED
-
-Use existing naming conventions.
-
----
-
-# 16. DATABASE RELATIONSHIPS
-
-Verify foreign-key relationships.
-
-Booking/Registration:
-
-user
--> User
-
-event
--> Event
-
-reviewedBy
--> Admin/User
-
-Prevent invalid orphan records.
-
-Add indexes where useful.
-
-Examples:
-
-users.email
-
-events.event_date
-
-booking.user_id
-
-booking.event_id
-
-booking.status
-
-booking.submitted_at
-
-Do not over-index.
-
----
-
-# 17. DUPLICATE REGISTRATION RULE
-
-Backend must prevent accidental duplicate active registration.
-
-For:
-
-User + Event
-
-If APPROVED:
-
-Reject new registration.
-
-If PENDING:
-
-Tell user registration is already under review.
-
-If REJECTED:
-
-Allow resubmission according to existing implementation.
-
-Prefer updating rejected registration rather than generating unnecessary duplicate rows.
-
----
-
-# 18. SUPABASE STORAGE
-
-Use Supabase Storage for application-managed uploads.
-
-Storage should support:
-
-Event Images
-
-Event QR Codes
-
-Payment Screenshots
-
-Gallery Images
-
-Member Photos
-
-and other legitimate application uploads.
-
-Do NOT store image binaries directly in PostgreSQL.
-
-Database should store:
-
-storage path
-
-object key
-
-URL/reference
-
-metadata
-
-as appropriate.
-
----
-
-# 19. STORAGE ORGANIZATION
-
-Create/use appropriate Supabase buckets.
-
-Recommended conceptual organization:
-
-PUBLIC:
-
-event-images
-
-event-qr
-
-gallery
-
-member-images
-
-PRIVATE:
-
-payment-proofs
-
-You may use fewer buckets with organized folders if cleaner.
-
-Use the architecture best suited to the application.
-
----
-
-# 20. PAYMENT PROOF PRIVACY
-
-Payment screenshots can contain financial/personal information.
-
-Do NOT make payment proof screenshots permanently public.
-
-Use a PRIVATE Supabase Storage bucket.
-
-Preferred flow:
-
-Admin UI
--> Spring Boot
--> verify ROLE_ADMIN
--> obtain/generate short-lived signed URL
--> Admin views proof
-
-Normal users should only access their own payment proof where necessary.
-
-User A must never access User B's proof.
-
----
-
-# 21. EVENT QR STORAGE
-
-Admin should be able to upload/replace QR image.
-
-Flow:
-
-Admin UI
-
--> Spring Boot
-
--> Spring Security verifies ADMIN
-
--> validate image
-
--> Supabase Storage
-
--> store QR object reference
-
--> Event stored/updated in PostgreSQL
-
-Public paid-event page can display the configured QR.
-
-Normal user cannot replace QR.
-
----
-
-# 22. PAYMENT SCREENSHOT STORAGE FLOW
-
-Paid registration:
-
-React
-
--> multipart/form-data
-
--> Spring Boot
-
--> authenticate user
-
--> validate event
-
--> validate screenshot
-
--> validate MIME type
-
--> validate size
-
--> upload to Supabase Storage private payment-proof bucket
-
--> store storage reference in Booking
-
--> status PENDING
-
-Do NOT automatically approve.
-
----
-
-# 23. FILE VALIDATION
-
-Backend must validate uploaded files.
-
-Allowed image types should include appropriate formats such as:
-
-image/jpeg
-
-image/png
-
-image/webp
-
-Check:
-
-empty file
-
-MIME type
-
-size
-
-upload success
-
-Do not trust filename extension only.
-
----
-
-# 24. STORAGE CLEANUP
-
-Avoid unnecessary orphan files.
-
-If:
-
-QR replaced
-
-gallery image deleted
-
-member photo replaced
-
-event image replaced
-
-remove old storage object where safe.
-
-For payment proof screenshots, preserve appropriate records/audit history.
-
-Do not delete evidence automatically without considering registration history.
-
----
-
-# 25. STORAGE + DATABASE FAILURE CONSISTENCY
-
-Handle partial failures.
-
-Example:
-
-Supabase Storage upload succeeds
-
-but database save fails.
-
-Attempt to remove the newly uploaded orphan object or otherwise recover safely.
-
-Do not silently create inconsistent state.
-
----
-
-# 26. REMOVE OBSOLETE STORAGE CONFIGURATION
-
-Inspect whether project currently uses:
-
-Cloudinary
-
-AWS S3
-
-local file uploads
-
-another provider
-
-If Supabase Storage replaces it completely:
-
-migrate the implementation
-
-verify it
-
-then remove obsolete:
-
-dependencies
-
-services
-
-configuration
-
-environment variables
-
-Do not remove old provider until Supabase path is working.
-
----
-
-# 27. REMOVE OBSOLETE DATABASE CONFIGURATION
-
-After Supabase PostgreSQL works, remove unused database:
-
-drivers
-
-connection strings
-
-environment variables
-
-configuration
-
-dependencies
-
-Only if genuinely obsolete.
-
-Keep PostgreSQL/JPA dependencies required by Supabase.
-
----
-
-# 28. DATABASE MIGRATIONS
-
-Do not rely indefinitely on:
-
-ddl-auto=update
-
-for production schema management.
-
-If safe, introduce:
-
-Flyway
-
-Create migrations representing the actual schema.
-
-Do not blindly execute destructive migrations against an unknown existing database.
-
-If production data/schema cannot safely be inferred:
-
-create safe migration strategy
-
-document required manual baseline
-
-and avoid data loss.
-
----
-
-# 29. FRONTEND API LAYER
-
-After database/storage foundation is correct, complete frontend integration.
-
-Replace placeholder APIs with real backend API clients.
-
-Inspect:
-
-src/api/placeholders.js
-
-and other API files.
-
-Create maintainable modules as appropriate, such as:
-
-apiClient
-
-authApi
-
-eventApi
-
-registrationApi
-
-adminApi
-
-galleryApi
-
-memberApi
-
-contentApi
-
-Use the project's existing conventions where possible.
-
----
-
-# 30. FRONTEND API BASE URL
-
-Use environment configuration.
-
-Example:
-
-VITE_API_BASE_URL=
-
-Do NOT hardcode localhost in every component.
-
-Do NOT put Supabase service-role key in React.
-
-Do NOT put database credentials in React.
-
-React should talk to Spring Boot.
-
----
-
-# 31. LOGIN PAGE
-
-Build/complete real Login.
-
-Connect:
-
-React Form
-
--> Spring Boot Login API
-
--> JWT
-
--> Authentication State
-
-Handle:
-
-invalid credentials
-
-server failure
-
-loading
-
-success
-
-Admin and normal user roles should be recognized from secure backend authentication data.
-
----
-
-# 32. REGISTER PAGE
-
-Build/complete user registration.
-
-Connect to backend.
-
-Validate:
-
-name
-
-email
-
-password
-
-and actual required fields.
-
-Handle duplicate email cleanly.
-
-Do not allow public user registration to assign ROLE_ADMIN.
-
----
-
-# 33. LOGOUT
-
-Implement logout correctly.
-
-Clear frontend authentication state/token according to the current architecture.
-
-Redirect appropriately.
-
-Protected content must become inaccessible.
-
----
-
-# 34. AUTHENTICATION STATE
-
-Implement centralized authentication state.
-
-Use existing Context/Redux/etc. if already present.
-
-Otherwise create a clean solution.
-
-It should manage:
-
-current user
-
-role
-
-authenticated
-
-loading
-
-login
-
-logout
-
-register
-
-auth restoration
-
-Do not duplicate auth state across many components.
-
----
-
-# 35. PROTECTED USER ROUTES
-
-Protect pages requiring authentication.
-
-Example:
-
-My Registrations
-
-Unauthenticated user should be redirected to Login or appropriate unauthorized page.
-
----
-
-# 36. ADMIN ROUTES
-
-Create/complete protected admin routing.
-
-Examples:
+/my-registrations
 
 /admin
 
@@ -1199,304 +117,87 @@ Examples:
 
 /admin/users
 
-Only include routes relevant to actual implementation.
-
-Normal user:
-
--> /admin
-
--> DENIED
-
-Backend authorization remains mandatory.
+Ensure navigation works.
 
 ---
 
-# 37. PUBLIC EVENTS PAGE
+# CONNECT UI TO REAL BACKEND
 
-Replace mock/static event data with backend data.
+Replace every remaining mock/static dataset.
 
-Display real events from Supabase PostgreSQL via Spring Boot.
+Remove placeholder APIs.
 
-Show:
+Ensure:
 
-image
+Home
 
-title
+About
 
-description preview
+Events
 
-date
+Gallery
 
-time
+Members
 
-location
+Dashboard
 
-FREE/PAID
+Registrations
 
-fee
-
-registration availability
-
-View Details
-
-Register
-
-Handle:
-
-loading
-
-error
-
-empty state
+all load real backend data.
 
 ---
 
-# 38. EVENT DETAILS PAGE
+# COMPLETE QR REGISTRATION FLOW
 
-Create/complete dynamic event details route.
+Verify the full workflow:
 
-Example:
+Admin creates paid event
 
-/events/:id
+↓
 
-Display backend data:
+QR stored in Supabase Storage
 
-title
+↓
 
-description
+User views event
 
-image
+↓
 
-date
+User uploads payment screenshot
 
-time
+↓
 
-location
+Screenshot stored in Supabase Storage
 
-fee
+↓
 
-registration deadline
+Registration stored in Supabase PostgreSQL
 
-availability
+↓
 
-QR/payment registration information when appropriate
+Status = PENDING
 
-If deadline passed:
+↓
 
-Registration Closed
+Admin reviews
 
-Backend must enforce deadline too.
+↓
 
----
+Approve or Reject
 
-# 39. FREE EVENT REGISTRATION
+↓
 
-For FREE events:
+User sees updated status.
 
-Do NOT show QR.
-
-Do NOT require screenshot.
-
-Allow registration using the backend workflow.
-
-Display correct resulting status.
+Fix every broken step.
 
 ---
 
-# 40. PAID EVENT QR REGISTRATION UI
+# COMPLETE ADMIN PANEL
 
-For PAID events:
+Finish all missing admin functionality.
 
-User clicks Register.
-
-Show:
-
-Event
-
-Fee
-
-QR
-
-UPI ID if configured
-
-Payment Instructions
-
-Screenshot Upload
-
-Submit
-
-Instructions:
-
-1. Scan the QR code.
-2. Pay the displayed registration fee.
-3. Take a screenshot of successful payment.
-4. Upload the screenshot.
-5. Submit your registration.
-6. Wait for admin verification.
-
-Do NOT show:
-
-Payment Successful
-
-after upload.
-
-Show:
-
-Payment proof submitted. Your registration is pending admin approval.
-
----
-
-# 41. SCREENSHOT UPLOAD FRONTEND
-
-Implement multipart upload.
-
-Provide:
-
-file picker
-
-preview
-
-filename
-
-validation
-
-loading/progress where appropriate
-
-error state
-
-success state
-
-Call the real Spring Boot API.
-
-The backend uploads proof to Supabase Storage.
-
----
-
-# 42. MY REGISTRATIONS
-
-Create/complete:
-
-/my-registrations
-
-Fetch logged-in user's registrations.
-
-Display:
-
-Event
-
-Date
-
-Fee
-
-Submission Date
-
-Status
-
-PENDING
-
-APPROVED
-
-REJECTED
-
-Rejection Reason
-
-Resubmit action where allowed
-
----
-
-# 43. PENDING UI
-
-For PENDING:
-
-Display clearly:
-
-PENDING
-
-"Your payment proof is under review."
-
-Do not show confirmed registration.
-
----
-
-# 44. APPROVED UI
-
-For APPROVED:
-
-Display:
-
-APPROVED
-
-"Your registration has been approved."
-
-This is the confirmed registration state.
-
----
-
-# 45. REJECTED UI
-
-For REJECTED:
-
-Display:
-
-REJECTED
-
-Show:
-
-rejection reason
-
-Provide:
-
-Resubmit Payment Proof
-
-when allowed.
-
----
-
-# 46. RESUBMISSION
-
-Implement frontend resubmission.
-
-User:
-
-Rejected Registration
-
--> Upload new screenshot
-
--> Submit
-
-Backend:
-
--> validate ownership
-
--> upload new proof
-
--> update registration
-
--> PENDING
-
--> reset relevant review fields
-
-Admin can review again.
-
----
-
-# 47. BUILD COMPLETE ADMIN PANEL
-
-The current admin panel is a major remaining gap.
-
-Build a real React Admin Panel.
-
-It must use actual Spring Boot APIs and Supabase-backed data.
-
-Do NOT build static admin pages.
-
----
-
-# 48. ADMIN LAYOUT
-
-Create reusable admin layout.
-
-Include:
+Verify:
 
 Dashboard
 
@@ -1510,1479 +211,156 @@ Members
 
 Content
 
-Users if required
+Users
 
-Logout
+All CRUD operations should work.
 
-Responsive navigation/sidebar.
+No placeholder UI.
 
-Keep it visually consistent with the project.
-
----
-
-# 49. ADMIN DASHBOARD
-
-Use real backend analytics.
-
-Display:
-
-Total Users
-
-Total Members
-
-Total Events
-
-Upcoming Events
-
-Total Registrations
-
-Pending Registrations
-
-Approved Registrations
-
-Rejected Registrations
-
-Gallery Items
-
-Do NOT hardcode values.
+No fake data.
 
 ---
 
-# 50. ADMIN EVENT MANAGEMENT
+# COMPLETE RESPONSIVE UI
 
-Build complete Event CRUD UI.
-
-Admin can:
-
-View
-
-Create
-
-Edit
-
-Delete
-
-Publish
-
-Unpublish
-
-Configure registration
-
-Configure free/paid
-
-Configure fee
-
-Upload event image
-
-Upload QR
-
-Set UPI ID
-
-Set payment instructions
-
-Set registration deadline
-
-Set capacity if supported
-
-All data must persist to Supabase PostgreSQL.
-
-Images/QR should use Supabase Storage.
-
----
-
-# 51. ADMIN REGISTRATIONS PAGE
-
-Create:
-
-/admin/registrations
-
-Display:
-
-User
-
-Email where appropriate
-
-Event
-
-Fee
-
-Screenshot/Proof
-
-Submitted Date
-
-Status
-
-Actions
-
-Filters:
-
-ALL
-
-PENDING
-
-APPROVED
-
-REJECTED
-
-Add search/event filter/sorting if practical.
-
-Pending submissions should be easy to find.
-
----
-
-# 52. ADMIN PAYMENT PROOF REVIEW
-
-Admin selects registration.
-
-Show:
-
-User
-
-Event
-
-Expected Fee
-
-Submitted Date
-
-Payment Screenshot
-
-Status
-
-Provide:
-
-APPROVE
-
-REJECT
-
-Admin Note
-
-Rejection Reason
-
-Payment proof should be securely retrieved from Supabase Storage.
-
-Do not expose permanent public proof URL.
-
----
-
-# 53. ADMIN APPROVE
-
-Admin:
-
-APPROVE
-
-Frontend:
-
--> protected API
-
-Backend:
-
--> JWT authentication
-
--> ROLE_ADMIN authorization
-
--> registration validation
-
--> status APPROVED
-
--> reviewedBy current admin
-
--> reviewedAt timestamp
-
--> save to Supabase PostgreSQL
-
-Frontend updates immediately.
-
----
-
-# 54. ADMIN REJECT
-
-Admin:
-
-REJECT
-
-Require meaningful rejection reason.
-
-Backend:
-
-status = REJECTED
-
-rejectionReason = reason
-
-reviewedBy = admin
-
-reviewedAt = timestamp
-
-User must see the reason.
-
----
-
-# 55. GALLERY
-
-Public Gallery:
-
-load real metadata from Supabase PostgreSQL
-
-and images from Supabase Storage.
-
-Admin Gallery:
-
-Upload
-
-Caption
-
-Edit metadata where supported
-
-Delete
-
-Changes should appear publicly.
-
-Remove fake gallery data after integration.
-
----
-
-# 56. MEMBERS
-
-Public member data should come from Supabase PostgreSQL where intended to be dynamic.
-
-Member photos:
-
-Supabase Storage.
-
-Admin should be able to:
-
-Add
-
-Edit
-
-Delete
-
-members.
-
-Do not create duplicate member systems.
-
----
-
-# 57. ABOUT / WEBSITE CONTENT
-
-Inspect current About page.
-
-If content is intended to be admin-managed:
-
-Admin Editor
-
--> Spring Boot
-
--> Supabase PostgreSQL
-
--> Public About Page
-
-Do not turn purely static/decorative text into unnecessary database content.
-
----
-
-# 58. USERS ADMIN PAGE
-
-If supported/required:
-
-Admin can view users.
-
-Provide:
-
-name
-
-email
-
-role
-
-registration history where useful
-
-Never expose:
-
-password
-
-password hash
-
-JWT secrets
-
-database secrets
-
-service role key
-
----
-
-# 59. REMOVE FRONTEND MOCK DATA
-
-Inspect:
-
-src/data/mockData.js
-
-src/api/placeholders.js
-
-and all frontend files.
-
-Replace fake production data with backend calls.
-
-Do not remove a mock file until all required consumers are migrated.
-
-Then safely remove unused mock code.
-
----
-
-# 60. NO PAYMENT GATEWAY
-
-Search the complete repository again for:
-
-Razorpay
-
-razorpay
-
-Stripe
-
-PayPal
-
-checkout
-
-payment order
-
-payment webhook
-
-gateway transaction
-
-Remove stale code/config/packages related to automatic payment gateways.
-
-Final workflow remains:
-
-QR
--> Manual Payment
--> Screenshot
--> PENDING
--> Admin Review
--> APPROVED / REJECTED
-
----
-
-# 61. INSTAGRAM
-
-Instagram should NOT block completion.
-
-If real Instagram Graph API credentials are unavailable:
-
-Do not invent them.
-
-Do not use fake posts and claim integration works.
-
-Handle missing integration gracefully.
-
-Keep manual/database gallery fully operational.
-
-Document:
-
-NEEDS EXTERNAL CONFIGURATION
-
-if necessary.
-
----
-
-# 62. ERROR HANDLING
-
-Provide clear frontend/backend errors for:
-
-Invalid Login
-
-Duplicate Email
-
-Unauthorized
-
-Forbidden
-
-Event Not Found
-
-Registration Closed
-
-Duplicate Registration
-
-Invalid Screenshot
-
-Upload Failed
-
-Database Failure
-
-Storage Failure
-
-Rejected Registration
-
-Session Expired
-
-Network Failure
-
-Avoid blank screens.
-
-Do not expose server stack traces.
-
----
-
-# 63. LOADING STATES
-
-Implement appropriate loading states.
-
-Examples:
-
-Loading events...
-
-Loading registration...
-
-Uploading screenshot...
-
-Loading dashboard...
-
-Saving event...
-
-Approving registration...
-
-Avoid confusing frozen UI.
-
----
-
-# 64. EMPTY STATES
-
-Provide:
-
-No Events Available
-
-No Registrations Found
-
-No Pending Registrations
-
-No Gallery Images
-
-No Members Found
-
-where appropriate.
-
----
-
-# 65. DESTRUCTIVE ACTION CONFIRMATION
-
-Ask confirmation before:
-
-Delete Event
-
-Delete Gallery Item
-
-Delete Member
-
-or similar destructive admin actions.
-
----
-
-# 66. RESPONSIVE DESIGN
-
-Verify:
-
-Desktop
+Verify Desktop
 
 Tablet
 
 Mobile
 
-for:
-
-Home
-
-About
-
-Events
-
-Event Details
-
-Login
-
-Register
-
-QR Registration
-
-My Registrations
-
-Gallery
-
-Admin Dashboard
-
-Admin Events
-
-Admin Registrations
-
-Admin Gallery
-
-Admin Members
-
-Fix obvious responsive issues.
+Fix layout issues.
 
 ---
 
-# 67. SECURITY AUDIT
+# REMOVE REMAINING OLD CODE
 
-Recheck:
+Search entire repository for:
 
-Password hashing
+mock
 
-JWT security
+dummy
 
-ROLE_ADMIN
+placeholder
 
-Admin APIs
+TODO
 
-Ownership validation
+FIXME
 
-User A vs User B registrations
+Cloudinary
 
-Payment proof privacy
+Razorpay
 
-Supabase service role secrecy
+Stripe
 
-Database credential secrecy
+PayPal
 
-Upload validation
+AWS
 
-File size validation
+local uploads
 
-MIME validation
-
-CORS
-
-Error exposure
-
-Admin role assignment
-
-Do not trust frontend authorization.
+Remove obsolete code only after verifying replacement exists.
 
 ---
 
-# 68. SUPABASE SECRET SECURITY
+# SECURITY CHECK
 
-NEVER expose:
+Verify:
 
-SUPABASE_SERVICE_ROLE_KEY
+ROLE_ADMIN protection
 
-DATABASE PASSWORD
+JWT validation
 
-JWT_SECRET
+Protected APIs
 
-database connection string containing password
+Protected Routes
 
-inside:
+Private payment screenshots
 
-React
+No leaked Supabase secrets
 
-VITE_* variables
+No leaked JWT secrets
 
-client JavaScript
+No user can access another user's registrations or payment proofs.
 
-HTML
-
-API responses
-
-logs
-
-Git
-
-Only backend should receive privileged credentials.
+Fix any issues found.
 
 ---
 
-# 69. TEST SUPABASE DATABASE
+# BUILD & TEST
 
-Verify real CRUD operations against Supabase PostgreSQL.
+Run frontend build.
 
-Test:
+Run backend build.
 
-Create User
+Fix all compile errors.
 
-Login User
+Run the application.
 
-Create Event
+Test complete user flow.
 
-Read Event
+Test complete admin flow.
 
-Update Event
+Test paid event flow.
 
-Delete Event
+Test free event flow.
 
-Create Registration
+Test rejection/resubmission flow.
 
-Read Registration
-
-Update Registration
-
-Approve Registration
-
-Reject Registration
-
-Gallery CRUD
-
-Member CRUD
-
-Content CRUD where implemented
-
-Do not mark database integration complete until actual operations succeed.
+Fix every discovered issue.
 
 ---
 
-# 70. TEST SUPABASE STORAGE
+# UPDATE DOCUMENTATION
 
-Verify actual upload/access for:
-
-Event Image
-
-Event QR
-
-Payment Screenshot
-
-Gallery Image
-
-Member Photo
-
-where implemented.
-
-Verify database references point to valid storage objects.
-
----
-
-# 71. USER END-TO-END TEST
-
-Test:
-
-User
-
--> Register
-
--> Login
-
--> View Events
-
--> Open Paid Event
-
--> See QR
-
--> Upload Screenshot
-
--> Submit
-
--> PENDING
-
--> My Registrations
-
-Admin
-
--> Login
-
--> Pending Registrations
-
--> View Secure Payment Proof
-
--> APPROVE
-
-User
-
--> My Registrations
-
--> APPROVED
-
-Verify actual database state.
-
----
-
-# 72. REJECTION END-TO-END TEST
-
-User:
-
-Submit Proof
-
-Admin:
-
-Reject
-
-Reason:
-"Screenshot unclear"
-
-User:
-
-Sees REJECTED
-
-Sees reason
-
-Uploads new screenshot
-
-Resubmits
-
-Registration becomes PENDING
-
-Admin approves
-
-User sees APPROVED
-
-Verify Supabase PostgreSQL + Storage state.
-
----
-
-# 73. FREE EVENT TEST
-
-Admin creates FREE event.
-
-User opens event.
-
-No QR.
-
-No screenshot.
-
-User registers.
-
-Verify registration persisted correctly.
-
----
-
-# 74. ADMIN EVENT TEST
-
-Admin:
-
-Login
-
--> Dashboard
-
--> Create Paid Event
-
--> Set Fee
-
--> Upload Event Image
-
--> Upload QR
-
--> Set Instructions
-
--> Publish
-
-Public user:
-
--> sees event
-
--> opens event
-
--> sees correct data
-
-Then:
-
-Admin edits event
-
--> public page updates.
-
----
-
-# 75. AUTHORIZATION TESTS
-
-Explicitly test:
-
-Unauthenticated
--> protected API
--> DENIED
-
-Unauthenticated
--> admin API
--> DENIED
-
-Normal User
--> admin API
--> DENIED
-
-Normal User
--> /admin
--> DENIED
-
-Normal User
--> Approve API
--> DENIED
-
-Normal User
--> Reject API
--> DENIED
-
-User A
--> User B registration/proof
--> DENIED
-
-Admin
--> admin functionality
--> ALLOWED
-
----
-
-# 76. BUILD VERIFICATION
-
-Run actual repository commands.
-
-Frontend:
-
-install dependencies as needed
-
-run production build
-
-Backend:
-
-compile/package
-
-run tests where available
-
-Fix:
-
-syntax errors
-
-TypeScript errors if applicable
-
-React errors
-
-missing imports
-
-API mismatches
-
-Spring errors
-
-JPA/PostgreSQL errors
-
-Supabase connection errors caused by implementation
-
-broken routes
-
-Do not stop at reporting fixable errors.
-
----
-
-# 77. DO NOT ASK ME TO CONTINUE
-
-If you discover:
-
-Admin UI missing
-
-BUILD IT.
-
-Login missing
-
-BUILD IT.
-
-API missing
-
-BUILD IT.
-
-Supabase integration missing
-
-IMPLEMENT IT.
-
-Storage service missing
-
-IMPLEMENT IT.
-
-Frontend/backend mismatch
-
-FIX IT.
-
-Mock data
-
-REPLACE IT.
-
-Security issue
-
-FIX IT.
-
-Do not ask:
-
-"Should I continue?"
-
-Continue.
-
-Only stop for genuinely external blockers that cannot be solved without credentials/access.
-
----
-
-# 78. EXTERNAL CREDENTIALS
-
-If Supabase credentials are unavailable:
-
-Still implement the complete integration architecture.
-
-Create:
-
-.env.example
-
-migration SQL
-
-bucket documentation
-
-setup instructions
-
-Do not invent credentials.
-
-Clearly distinguish:
-
-CODE COMPLETE
-
-from
-
-RUNTIME VERIFICATION REQUIRES CREDENTIALS
-
-Do the same for Instagram or other external services.
-
----
-
-# 79. UPDATE PROJECT_AUDIT.md
-
-After implementation update:
+Update:
 
 PROJECT_AUDIT.md
 
-Show BEFORE and AFTER.
+PROJECT_STATUS.md
 
-Example:
+README.md
 
-| Feature            | Before  | After     |
-| ------------------ | ------- | --------- |
-| Frontend Login     | Missing | Completed |
-| Admin Dashboard    | Missing | Completed |
-| Public Events      | Mock    | Completed |
-| Supabase DB        | Missing | Completed |
-| Supabase Storage   | Missing | Completed |
-| QR Registration UI | Partial | Completed |
-| Screenshot Upload  | Partial | Completed |
-| Admin Approval UI  | Missing | Completed |
+Reflect the ACTUAL project status.
 
-Only say COMPLETED if verified.
+Do not copy old percentages.
 
 ---
 
-# 80. UPDATE PROJECT_STATUS.md
+# FINAL REPORT
 
-Recalculate actual:
+Provide:
 
-Overall Completion
+Overall Completion %
 
-Frontend
+Frontend %
 
-Backend
+Backend %
 
-Admin Panel
+Admin %
 
-Database/Integration
+Database %
 
-Do not automatically claim 100%.
+List:
 
-Use actual verified state.
+Completed
 
----
+Fixed
 
-# 81. UPDATE README
+Remaining
 
-Update project documentation.
+Files Created
 
-Clearly state stack:
+Files Modified
 
-React
+Files Deleted
 
-Spring Boot
+Known External Configuration Required
 
-Spring Security
+Do NOT stop until every implementable feature is completed.
 
-JWT
+If you discover a problem, fix it instead of reporting it whenever possible.
 
-Spring Data JPA
+Do not ask whether to continue.
 
-Supabase PostgreSQL
-
-Supabase Storage
-
-Manual QR Registration Verification
-
-Include:
-
-local run instructions
-
-required environment variables
-
-Supabase setup
-
-required buckets
-
-database migrations
-
-frontend start/build
-
-backend start/build
-
-admin setup approach
-
-Do not include real secrets.
-
----
-
-# 82. FINAL ACCEPTANCE CHECKLIST
-
-Before finishing verify each item:
-
-[ ] Supabase PostgreSQL connected
-
-[ ] Spring Boot CRUD works with Supabase
-
-[ ] Supabase Storage integrated
-
-[ ] Payment proofs private
-
-[ ] Event QR upload works
-
-[ ] Event image upload works
-
-[ ] User registration works
-
-[ ] User login works
-
-[ ] Logout works
-
-[ ] Auth persistence works
-
-[ ] Admin authorization works
-
-[ ] Events come from backend
-
-[ ] Event details come from backend
-
-[ ] Admin creates event
-
-[ ] Admin edits event
-
-[ ] Admin deletes event
-
-[ ] Admin configures paid/free event
-
-[ ] Admin configures fee
-
-[ ] Admin uploads QR
-
-[ ] User sees QR
-
-[ ] User uploads payment screenshot
-
-[ ] Screenshot reaches Supabase Storage
-
-[ ] Registration stored in Supabase PostgreSQL
-
-[ ] Registration becomes PENDING
-
-[ ] Admin sees pending registration
-
-[ ] Admin securely views screenshot
-
-[ ] Admin approves
-
-[ ] Admin rejects
-
-[ ] Rejection reason reaches user
-
-[ ] User resubmits rejected proof
-
-[ ] User sees APPROVED
-
-[ ] Duplicate registration prevented
-
-[ ] Free event works without QR
-
-[ ] Gallery uses backend + Supabase
-
-[ ] Admin manages gallery
-
-[ ] Members use backend + Supabase
-
-[ ] Admin manages members
-
-[ ] About dynamic content works where required
-
-[ ] Dashboard uses real data
-
-[ ] Normal user cannot access admin APIs
-
-[ ] User cannot access another user's payment proof
-
-[ ] No payment gateway remains
-
-[ ] No important mock production data remains
-
-[ ] Frontend build passes
-
-[ ] Backend build passes
-
-For every unchecked item:
-
-attempt to fix it before finalizing.
-
----
-
-# 83. FINAL PROJECT ARCHITECTURE
-
-The completed application should work like:
-
-PUBLIC USER
-
-React
--> Spring Boot API
--> Supabase PostgreSQL
-
-PAID EVENT REGISTRATION
-
-React Event Page
--> Event from Supabase PostgreSQL
--> QR from Supabase Storage
--> User pays manually
--> User uploads screenshot
--> Spring Boot validates upload
--> Supabase Storage stores proof privately
--> Supabase PostgreSQL stores registration
--> PENDING
-
-ADMIN
-
-React Admin Panel
--> Spring Boot
--> JWT + ROLE_ADMIN
--> Supabase PostgreSQL
-
-Admin reviews registration
-
--> securely retrieves proof from Supabase Storage
--> APPROVE / REJECT
-
-APPROVE
-
--> PostgreSQL status APPROVED
--> User sees APPROVED
-
-REJECT
-
--> PostgreSQL status REJECTED
--> rejection reason stored
--> User sees reason
--> resubmits proof
--> new proof stored
--> status PENDING
-
----
-
-# 84. DEFINITION OF DONE
-
-Do NOT consider a feature complete because:
-
-component exists
-
-route exists
-
-controller exists
-
-repository exists
-
-table exists
-
-button exists
-
-admin page renders
-
-A feature is complete only when:
-
-React UI
--> Spring Boot API
--> Security
--> Business Logic
--> Supabase PostgreSQL / Storage
--> Response
--> React UI
-
-works end-to-end.
-
-Example:
-
-QR REGISTRATION is complete only when:
-
-Admin Creates Event
--> QR Stored
--> Event Stored
--> User Fetches Event
--> QR Displays
--> Screenshot Uploads
--> Proof Stored
--> Registration PENDING
--> Admin Reviews
--> APPROVES/REJECTS
--> User Sees Result
-
----
-
-# 85. EXECUTION ORDER
-
-Follow this order:
-
-1. Read PROJECT_AUDIT.md
-2. Read PROJECT_STATUS.md
-3. Inspect repository
-4. Inspect backend APIs
-5. Inspect database configuration
-6. Inspect storage configuration
-7. Inspect frontend
-8. Map current API architecture
-9. Configure Supabase PostgreSQL
-10. Verify database connection
-11. Adapt JPA entities/repositories
-12. Add safe migrations
-13. Implement Supabase Storage service
-14. Migrate event image storage
-15. Migrate QR storage
-16. Migrate payment proof storage
-17. Migrate gallery storage
-18. Migrate member image storage
-19. Secure private payment proofs
-20. Remove obsolete storage/database config
-21. Build frontend API layer
-22. Complete Login
-23. Complete Register
-24. Complete Logout
-25. Complete auth state
-26. Complete protected routes
-27. Complete admin routes
-28. Connect public Events
-29. Complete Event Details
-30. Complete free registration
-31. Complete paid QR registration
-32. Complete screenshot upload
-33. Complete My Registrations
-34. Complete status UI
-35. Complete rejection/resubmission
-36. Build Admin Layout
-37. Build Admin Dashboard
-38. Build Event CRUD
-39. Build QR management
-40. Build Registration management
-41. Build secure screenshot review
-42. Build Approve/Reject UI
-43. Complete Gallery
-44. Complete Members
-45. Complete About content
-46. Remove mock production data
-47. Remove remaining payment gateway code
-48. Security audit
-49. Responsive testing
-50. Supabase database testing
-51. Supabase storage testing
-52. User E2E test
-53. Admin E2E test
-54. Rejection/resubmission E2E test
-55. Free event E2E test
-56. Authorization tests
-57. Frontend production build
-58. Backend build/tests
-59. Fix discovered issues
-60. Re-run verification
-61. Update PROJECT_AUDIT.md
-62. Update PROJECT_STATUS.md
-63. Update README
-64. Provide final report
-
----
-
-# 86. FINAL RESPONSE FORMAT
-
-At the end respond:
-
-NAGPUR LADIES CLUB — FINAL PROJECT STATUS
-
-Overall Completion: XX%
-
-Frontend: XX%
-
-Backend: XX%
-
-Admin Panel: XX%
-
-Database/Integration: XX%
-
-SUPABASE POSTGRESQL:
-CONNECTED / PARTIAL / FAILED / NEEDS CREDENTIALS
-
-SUPABASE STORAGE:
-CONNECTED / PARTIAL / FAILED / NEEDS CREDENTIALS
-
-AUTHENTICATION:
-COMPLETE / PARTIAL
-
-ADMIN AUTHORIZATION:
-COMPLETE / PARTIAL
-
-EVENT SYSTEM:
-COMPLETE / PARTIAL
-
-FREE EVENT REGISTRATION:
-COMPLETE / PARTIAL
-
-QR REGISTRATION:
-COMPLETE / PARTIAL
-
-SCREENSHOT UPLOAD:
-COMPLETE / PARTIAL
-
-ADMIN APPROVAL:
-COMPLETE / PARTIAL
-
-REJECTION/RESUBMISSION:
-COMPLETE / PARTIAL
-
-MY REGISTRATIONS:
-COMPLETE / PARTIAL
-
-GALLERY:
-COMPLETE / PARTIAL
-
-MEMBERS:
-COMPLETE / PARTIAL
-
-ABOUT CONTENT:
-COMPLETE / PARTIAL
-
-SECURITY:
-PASS / NEEDS WORK
-
-FRONTEND BUILD:
-PASS / FAIL
-
-BACKEND BUILD:
-PASS / FAIL
-
-DATABASE TEST:
-PASS / FAIL / NEEDS CREDENTIALS
-
-STORAGE TEST:
-PASS / FAIL / NEEDS CREDENTIALS
-
-Then report:
-
-COMPLETED
-
-FIXED
-
-ADDED
-
-SUPABASE TABLES
-
-SUPABASE BUCKETS
-
-DATABASE MIGRATIONS
-
-TESTED
-
-EXTERNAL CONFIGURATION REQUIRED
-
-REMAINING
-
-FILES CREATED
-
-FILES MODIFIED
-
-FILES REMOVED
-
-Do not claim 100% unless all internally implementable functionality has actually been implemented and verified.
-
-Do not claim Supabase runtime verification if credentials were unavailable.
-
----
-
-# 87. MOST IMPORTANT RULES
-
-DO NOT create a new project.
-
-DO NOT rebuild working backend code unnecessarily.
-
-DO NOT introduce Supabase Auth unless absolutely necessary.
-
-DO NOT let React directly access privileged database functionality.
-
-DO NOT expose Supabase service-role key.
-
-DO NOT expose database credentials.
-
-DO NOT make payment screenshots public.
-
-DO NOT use Razorpay.
-
-DO NOT use Stripe.
-
-DO NOT use PayPal.
-
-DO NOT use an automatic payment gateway.
-
-DO NOT create fake data to make the project look complete.
-
-DO NOT create fake admin functionality.
-
-DO NOT mark a feature complete because UI exists.
-
-DO NOT stop after Supabase migration.
-
-DO NOT stop after frontend implementation.
-
-DO NOT stop after admin implementation.
-
-DO NOT ask me whether you should continue.
-
-DO NOT report untested functionality as verified.
-
-DO NOT destroy existing data.
-
-DO NOT create duplicate entities/APIs/auth systems.
-
-DO:
-
-INSPECT
-
--> PRESERVE WORKING CODE
-
--> MIGRATE TO SUPABASE
-
--> INTEGRATE STORAGE
-
--> BUILD FRONTEND
-
--> BUILD ADMIN
-
--> CONNECT APIs
-
--> SECURE
-
--> TEST
-
--> BUILD
-
--> FIX
-
--> VERIFY
-
--> DOCUMENT
-
-The final objective is a genuinely working Nagpur Ladies Club application using:
-
-React
-+
-Spring Boot
-+
-Spring Security JWT
-+
-Supabase PostgreSQL
-+
-Supabase Storage
-+
-QR Payment
-+
-Screenshot Verification
-+
-Admin Approval
-
-Begin now by reading PROJECT_AUDIT.md and PROJECT_STATUS.md and inspecting the existing repository.
-
-Then execute the entire plan.
+Continue until the project is as complete as possible.

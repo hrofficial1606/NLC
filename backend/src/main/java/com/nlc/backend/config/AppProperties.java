@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 public class AppProperties {
 
     private final Security security = new Security();
-    private final Media media = new Media();
     private final Integrations integrations = new Integrations();
     private final Frontend frontend = new Frontend();
     private final Notifications notifications = new Notifications();
@@ -46,21 +45,6 @@ public class AppProperties {
     public static class Cors {
         @NotEmpty
         private List<String> allowedOrigins = new ArrayList<>();
-    }
-
-    @Getter
-    @Setter
-    public static class Media {
-        private String provider;
-        private final Cloudinary cloudinary = new Cloudinary();
-    }
-
-    @Getter
-    @Setter
-    public static class Cloudinary {
-        private String cloudName;
-        private String apiKey;
-        private String apiSecret;
     }
 
     @Getter

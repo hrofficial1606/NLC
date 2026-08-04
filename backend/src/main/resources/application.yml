@@ -6,6 +6,15 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    hikari:
+      # Sensible HikariCP pool sizing for Supabase Postgres.
+      # Supabase free tier caps concurrent connections — keep this conservative.
+      maximum-pool-size: ${DB_POOL_MAX:10}
+      minimum-idle: ${DB_POOL_MIN:2}
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: nlc-hikari
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,6 +22,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 30
+        order_inserts: true
+        order_updates: true
     show-sql: false
   jackson:
     serialization:
