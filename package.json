@@ -1,8 +1,20 @@
 {
   "name": "nlc-website",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "homepage": "https://github.com/hrofficial1606/NLC#readme",
+  "bugs": {
+    "url": "https://github.com/hrofficial1606/NLC/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hrofficial1606/NLC.git"
+  },
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "vite.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
