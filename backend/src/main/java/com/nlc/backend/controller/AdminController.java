@@ -2,6 +2,7 @@ package com.nlc.backend.controller;
 
 import com.nlc.backend.dto.booking.BookingResponse;
 import com.nlc.backend.dto.booking.BookingReviewRequest;
+import com.nlc.backend.dto.booking.PaymentProofResponse;
 import com.nlc.backend.dto.cms.AboutContentRequest;
 import com.nlc.backend.dto.cms.AboutContentResponse;
 import com.nlc.backend.dto.cms.TeamMemberRequest;
@@ -163,6 +164,16 @@ public class AdminController {
                                                       @Valid @RequestBody BookingReviewRequest request) {
         return ApiResponse.success("Registration rejected",
                 bookingService.rejectBooking(id, principal.getId(), request));
+    }
+
+    /**
+     * Generates a short-lived signed URL for the private payment-proof object so
+     * the admin can review the screenshot. The signed URL is generated on demand
+     * (typically 5 min TTL) and never persisted. ROLE_ADMIN only.
+     */
+    @GetMapping("/bookings/{id}/payment-proof")
+    public ApiResponse<PaymentProofResponse> bookingPaymentProof(@PathVariable Long id) {
+        return ApiResponse.success("Signed URL generated", bookingService.generateAdminPaymentProof(id));
     }
 
     @PostMapping("/gallery")

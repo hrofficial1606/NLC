@@ -25,6 +25,31 @@ function ReviewModal({ booking, onClose, onAction, busy }) {
   const [adminNote, setAdminNote] = useState(booking.adminNote || "");
   const [rejectionReason, setRejectionReason] = useState("");
   const [error, setError] = useState("");
+  const [signedUrl, setSignedUrl] = useState("");
+  const [signedUrlLoading, setSignedUrlLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProof() {
+      if (!booking.hasPaymentProof) {
+        setSignedUrl("");
+        return;
+      }
+      setSignedUrlLoading(true);
+      try {
+        const data = await registrationApi.getBookingPaymentProof(booking.id);
+        if (!cancelled) setSignedUrl(data?.signedUrl || "");
+      } catch (err) {
+        if (!cancelled) setError(err.message || "Could not load payment proof");
+      } finally {
+        if (!cancelled) setSignedUrlLoading(false);
+      }
+    }
+    loadProof();
+    return () => {
+      cancelled = true;
+    };
+  }, [booking.id, booking.hasPaymentProof]);
 
   async function handleApprove() {
     setError("");
@@ -63,13 +88,21 @@ function ReviewModal({ booking, onClose, onAction, busy }) {
           <div><dt>Status</dt><dd><span className={statusClass(booking.status)}>{booking.status}</span></dd></div>
         </dl>
 
-        {booking.paymentScreenshotUrl ? (
+        {booking.hasPaymentProof ? (
           <div className="review-modal__proof">
             <p>Payment proof (secure, short-lived URL):</p>
-            <a href={booking.paymentScreenshotUrl} target="_blank" rel="noreferrer noopener">
-              Open screenshot in new tab
-            </a>
-            <img src={booking.paymentScreenshotUrl} alt="Payment proof" />
+            {signedUrlLoading ? (
+              <p className="muted">Loading signed URL…</p>
+            ) : signedUrl ? (
+              <>
+                <a href={signedUrl} target="_blank" rel="noreferrer noopener">
+                  Open screenshot in new tab
+                </a>
+                <img src={signedUrl} alt="Payment proof" />
+              </>
+            ) : (
+              <p className="muted">Could not retrieve payment proof URL.</p>
+            )}
           </div>
         ) : (
           <p className="muted">No payment screenshot attached (free event or none uploaded).</p>

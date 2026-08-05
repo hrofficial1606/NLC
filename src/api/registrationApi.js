@@ -49,3 +49,9 @@ export function rejectBooking(id, { rejectionReason, adminNote }) {
     body: { rejectionReason, adminNote },
   });
 }
+
+// Admin-only: request a short-lived signed URL for the private payment-proof object.
+// The URL is generated on demand and expires after SUPABASE_SIGNED_URL_TTL seconds.
+export function getBookingPaymentProof(id) {
+  return apiFetch(`/admin/bookings/${id}/payment-proof`);
+}

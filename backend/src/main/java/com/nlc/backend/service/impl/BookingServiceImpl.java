@@ -1,8 +1,10 @@
 package com.nlc.backend.service.impl;
 
+import com.nlc.backend.config.StorageProperties;
 import com.nlc.backend.dto.booking.BookingRequest;
 import com.nlc.backend.dto.booking.BookingReviewRequest;
 import com.nlc.backend.dto.booking.BookingResponse;
+import com.nlc.backend.dto.booking.PaymentProofResponse;
 import com.nlc.backend.dto.upload.StorageUploadResult;
 import com.nlc.backend.entity.Booking;
 import com.nlc.backend.entity.Event;
@@ -19,6 +21,7 @@ import com.nlc.backend.service.NotificationService;
 import com.nlc.backend.service.StorageService;
 import com.nlc.backend.service.WhatsAppService;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final StorageService storageService;
+    private final StorageProperties storageProperties;
     private final NotificationService notificationService;
     private final WhatsAppService whatsAppService;
 
@@ -79,17 +83,16 @@ public class BookingServiceImpl implements BookingService {
                 throw new BadRequestException("Payment screenshot is required for paid events");
             }
             validateScreenshot(paymentScreenshot);
-            if (booking.getPaymentScreenshotPublicId() != null && !booking.getPaymentScreenshotPublicId().isBlank()) {
-                storageService.delete(StorageService.PRIVATE_BUCKET, booking.getPaymentScreenshotPublicId());
+            String previousKey = booking.getPaymentScreenshotObjectKey();
+            if (previousKey != null && !previousKey.isBlank()) {
+                storageService.delete(StorageService.PRIVATE_BUCKET, previousKey);
             }
             StorageUploadResult upload = storageService.uploadPrivate(
                     paymentScreenshot, "payment-proofs", UUID.randomUUID().toString());
-            booking.setPaymentScreenshotUrl(upload.objectKey());
-            booking.setPaymentScreenshotPublicId(upload.objectKey());
+            booking.setPaymentScreenshotObjectKey(upload.objectKey());
             booking.setStatus(BookingStatus.PENDING);
         } else {
-            booking.setPaymentScreenshotUrl(null);
-            booking.setPaymentScreenshotPublicId(null);
+            booking.setPaymentScreenshotObjectKey(null);
             booking.setStatus(BookingStatus.APPROVED);
             reserveApprovedSeats(event, request.quantity());
         }
@@ -218,6 +221,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private BookingResponse toResponse(Booking booking) {
+        return toResponse(booking, false);
+    }
+
+    private BookingResponse toResponse(Booking booking, boolean viewerIsAdmin) {
+        String key = booking.getPaymentScreenshotObjectKey();
+        boolean hasProof = key != null && !key.isBlank();
         return new BookingResponse(
                 booking.getId(),
                 booking.getBookingReference(),
@@ -227,12 +236,35 @@ public class BookingServiceImpl implements BookingService {
                 booking.getTotalAmount(),
                 booking.getStatus().name(),
                 booking.getEvent().isPaidEvent(),
-                booking.getPaymentScreenshotUrl(),
+                hasProof,
                 booking.getRejectionReason(),
                 booking.getAdminNote(),
                 booking.getSubmittedAt(),
                 booking.getReviewedAt(),
                 booking.getCreatedAt()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PaymentProofResponse generateAdminPaymentProof(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Registration not found"));
+        String objectKey = booking.getPaymentScreenshotObjectKey();
+        if (objectKey == null || objectKey.isBlank()) {
+            throw new ResourceNotFoundException("No payment proof uploaded for this registration");
+        }
+        int ttl = storageProperties.getSupabase().getSignedUrlTtlSeconds();
+        String signedUrl = storageService.resolveViewUrl(StorageService.PRIVATE_BUCKET, objectKey);
+        if (signedUrl == null || signedUrl.isBlank()) {
+            throw new IllegalStateException("Unable to generate signed URL for payment proof");
+        }
+        return new PaymentProofResponse(
+                booking.getId(),
+                booking.getBookingReference(),
+                signedUrl,
+                Instant.now().plusSeconds(ttl),
+                ttl
         );
     }
 }

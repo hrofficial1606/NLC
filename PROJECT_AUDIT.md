@@ -147,9 +147,9 @@ The following terms still indicate incomplete or placeholder behavior:
 | Authorization | Missing | Complete | Complete | Partial | Partial | PARTIALLY COMPLETED | Server-side admin/user protection exists; end-to-end UI verification is still pending. |
 | Events | UI Only | Complete | Complete | Partial | Partial | PARTIALLY COMPLETED | Backend event CRUD and upcoming highlight logic work; public event pages are still static. |
 | Event Registration | Missing | Complete | Complete | Partial | Partial | PARTIALLY COMPLETED | Backend now supports free/paid registrations, duplicate prevention, resubmission, and user status, but frontend still needs integration. |
-| QR Payment | Missing | Complete | Complete | Partial | Partial | PARTIALLY COMPLETED | QR/payment-instruction fields now exist per event, but no public UI is wired yet. |
-| Screenshot Upload | Missing | Complete | Complete | Partial | Needs Config | PARTIALLY COMPLETED | Backend screenshot upload and validation are implemented; depends on storage credentials and frontend form integration. |
-| Admin Approval | Missing | Complete | Complete | Partial | Partial | PARTIALLY COMPLETED | Protected approve/reject APIs exist; no admin dashboard UI yet. |
+| QR Payment | Missing | Complete | Complete | Complete | Partial | PARTIALLY COMPLETED | QR/payment-instruction fields exist per event. Admin signed-URL review endpoint exists for payment proofs; public registration QR UI is still static. |
+| Screenshot Upload | Missing | Complete | Complete | Complete | Partial | COMPLETED | Screenshots are stored in `nlc-private` Supabase bucket; only the storage object key is persisted; admin signed-URL endpoint returns short-lived signed URL on demand. Frontend admin modal now calls the endpoint to view proofs. |
+| Admin Approval | Missing | Complete | Complete | Complete | Partial | COMPLETED | Approve/reject/restart flows exist with admin signed-URL review; frontend admin modal handles the full review lifecycle. |
 | Gallery | Partial | Complete | Complete | Partial | Needs Config | PARTIALLY COMPLETED | Backend gallery remains stronger than frontend/admin UI integration. |
 | Members | UI Only | Partial | Partial | Partial | Missing | PARTIALLY COMPLETED | Team/member CMS backend exists; public/member management UX remains incomplete. |
 | About Content | UI Only | Partial | Partial | Partial | Missing | PARTIALLY COMPLETED | Backend CMS endpoints exist; frontend still renders mostly static about content. |

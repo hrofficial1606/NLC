@@ -1,211 +1,477 @@
-# FINAL BUILD, TEST & RELEASE PHASE
+# NAGPUR LADIES CLUB — FINAL PRODUCTION SECURITY & DEPLOYMENT READINESS
 
-The project is now mostly implemented.
+The project is approximately 98% complete.
 
-Do NOT generate new features.
+DO NOT redesign the application.
 
-Do NOT redesign the architecture.
+DO NOT regenerate existing features.
 
-Continue from the current repository state.
+DO NOT recreate components.
 
-Your goal is to make the repository fully buildable, testable, and production-ready.
+Continue ONLY from the current repository state.
 
----
+The backend builds successfully.
 
-## Phase 1 — Backend Build
+The frontend builds successfully.
 
-Run:
+Spring Boot starts successfully.
 
-mvn clean package
+Frontend starts successfully.
 
-Resolve every compilation error.
+Most APIs have already been verified.
 
-Continue until Maven completes successfully.
-
-Do not stop after the first error.
+The remaining objective is to make the project PRODUCTION READY.
 
 ---
 
-## Phase 2 — Spring Boot Startup
+# PRIMARY OBJECTIVE
 
-Run the backend.
+Complete the remaining security work for the QR payment workflow.
 
-Fix:
+Payment screenshots MUST NEVER be publicly accessible.
 
-* Bean creation errors
-* Entity mapping errors
-* Repository errors
-* Dependency injection errors
-* Configuration errors
-* Supabase configuration
-* Storage configuration
-
-Continue until Spring Boot starts successfully.
+The application must be production-ready after this task.
 
 ---
 
-## Phase 3 — Frontend Verification
+# STEP 1 — COMPLETE PRIVATE PAYMENT STORAGE
 
-Run:
+Inspect the current implementation of:
 
-npm install
+BookingServiceImpl
 
-npm run build
+StorageService
 
-npm run dev
+SupabaseStorageService
+
+MediaStorageService
+
+UploadController
+
+BookingResponse
+
+Booking entity
+
+AdminController
+
+Do NOT create duplicate storage services.
+
+Use the existing StorageService implementation.
+
+Payment screenshots MUST be uploaded using:
+
+StorageService.uploadPrivate(...)
+
+NOT public upload methods.
+
+---
+
+# STEP 2 — STORE OBJECT KEYS, NOT PUBLIC URLS
+
+Do NOT save a permanent public URL.
+
+Persist only the private storage object key.
+
+Examples:
+
+paymentScreenshotObjectKey
+
+paymentScreenshotStorageKey
+
+or the existing equivalent field.
+
+Do not expose the storage key in normal user responses.
+
+---
+
+# STEP 3 — ADMIN SIGNED URL ENDPOINT
+
+Implement an ADMIN ONLY endpoint.
+
+Example:
+
+GET /api/admin/bookings/{id}/payment-proof
+
+Workflow:
+
+Admin JWT
+
+↓
+
+ROLE_ADMIN validation
+
+↓
+
+Booking exists
+
+↓
+
+Booking has payment screenshot
+
+↓
+
+Generate Supabase signed URL
+
+↓
+
+Return temporary signed URL
+
+Signed URL should expire after a short period (for example 5–15 minutes).
+
+Never return a permanent public URL.
+
+---
+
+# STEP 4 — USER ACCESS RULES
+
+Normal users:
+
+May upload payment screenshots.
+
+May see upload status.
+
+May see booking status.
+
+Must NOT receive signed URLs.
+
+Must NOT access another user's screenshot.
+
+Users should see:
+
+"Payment proof uploaded successfully."
+
+not the storage object.
+
+---
+
+# STEP 5 — ADMIN REVIEW FLOW
+
+Admin opens pending booking.
+
+Backend generates temporary signed URL.
+
+Admin views screenshot.
+
+Admin approves or rejects.
+
+Signed URL should be generated on demand.
+
+Never permanently store signed URLs.
+
+---
+
+# STEP 6 — SUPABASE STORAGE SECURITY
+
+Verify bucket permissions.
+
+Expected architecture:
+
+PUBLIC
+
+event-images
+
+gallery
+
+member-images
+
+event-qr
+
+PRIVATE
+
+payment-proofs
+
+Payment proofs must never become publicly accessible.
+
+---
+
+# STEP 7 — DELETE OLD SCREENSHOTS
+
+If user uploads a replacement screenshot:
+
+Delete previous private object.
+
+Upload new screenshot.
+
+Update database.
+
+Status returns to PENDING.
+
+Avoid orphan files.
+
+---
+
+# STEP 8 — TEST COMPLETE PAID FLOW
+
+Run the complete workflow.
+
+Admin
+
+↓
+
+Create Paid Event
+
+↓
+
+Upload QR
+
+↓
+
+Publish Event
+
+↓
+
+User Registers
+
+↓
+
+Pay via QR
+
+↓
+
+Upload Screenshot
+
+↓
+
+Screenshot stored in PRIVATE bucket
+
+↓
+
+Booking PENDING
+
+↓
+
+Admin requests signed URL
+
+↓
+
+Screenshot visible
+
+↓
+
+Approve
+
+↓
+
+User sees APPROVED
+
+Repeat the same flow for REJECT.
+
+---
+
+# STEP 9 — VERIFY SECURITY
+
+Attempt the following:
+
+Unauthenticated user requests payment proof
+
+Expected:
+
+401
+
+Normal user requests another user's proof
+
+Expected:
+
+403
+
+Normal user requests admin endpoint
+
+Expected:
+
+403
+
+Expired signed URL
+
+Expected:
+
+Access denied
+
+Only ROLE_ADMIN should receive signed URLs.
+
+---
+
+# STEP 10 — VERIFY SUPABASE
 
 Verify:
 
-* No console errors
-* No routing issues
-* No broken imports
-* No missing assets
+Private bucket uploads
+
+Signed URL generation
+
+Delete object
+
+Replace object
+
+Error handling
+
+Missing object handling
+
+Expired URL handling
 
 ---
 
-## Phase 4 — API Verification
+# STEP 11 — END-TO-END TESTING
 
-Verify every frontend API matches the backend.
+Verify:
+
+User Registration
+
+Login
+
+Logout
+
+JWT
+
+Protected Routes
+
+Create Event
+
+Free Registration
+
+Paid Registration
+
+QR Display
+
+Screenshot Upload
+
+Pending Status
+
+Approve
+
+Reject
+
+Resubmit
+
+Gallery
+
+Members
+
+CMS
+
+Admin Dashboard
+
+Every tested feature should either PASS or be fixed.
+
+---
+
+# STEP 12 — CLEANUP
+
+Search repository for:
+
+paymentScreenshotUrl
+
+public URL
+
+temporary workaround
+
+TODO
+
+FIXME
+
+Remove obsolete code.
+
+Do not leave duplicate storage logic.
+
+---
+
+# STEP 13 — DEPLOYMENT READINESS
+
+Verify production configuration.
 
 Check:
 
-* Auth
-* Events
-* Bookings
-* Gallery
-* Members
-* Sponsors
-* CMS
-* Contact
-* Uploads
-* Dashboard
+Supabase environment variables
 
-Fix mismatches.
+JWT Secret
 
----
+CORS
 
-## Phase 5 — End-to-End Testing
+Storage buckets
 
-Test as a normal user:
+Database URL
 
-* Register
-* Login
-* Logout
-* Browse events
-* Register for free event
-* Register for paid event
-* Upload payment screenshot
-* View registration history
+Production profile
+
+No localhost URLs
+
+No debug configuration
+
+No hardcoded credentials
+
+No test accounts
+
+No development secrets
 
 ---
 
-## Phase 6 — Admin Testing
+# STEP 14 — UPDATE DOCUMENTATION
 
-Login as Admin.
+Update:
 
-Verify:
+PROJECT_STATUS.md
 
-* Dashboard
-* Users
-* Events
-* Registrations
-* Gallery
-* Members
-* Sponsors
-* CMS
-* Contact
+PROJECT_AUDIT.md
 
-Perform complete CRUD testing.
+README.md
 
----
+Document:
 
-## Phase 7 — QR Payment Workflow
+Private payment proof storage
 
-Verify this entire sequence:
+Signed URL implementation
 
-Admin creates paid event
+Admin review flow
 
-↓
+Required Supabase buckets
 
-Admin uploads QR code
+Required environment variables
 
-↓
-
-QR stored in Supabase Storage
-
-↓
-
-User views QR
-
-↓
-
-User uploads payment screenshot
-
-↓
-
-Screenshot stored in private Supabase bucket
-
-↓
-
-Registration becomes PENDING
-
-↓
-
-Admin reviews proof
-
-↓
-
-Approve or Reject
-
-↓
-
-User sees updated status immediately
-
-Fix any broken step.
+Deployment checklist
 
 ---
 
-## Phase 8 — Security
+# STEP 15 — FINAL DEPLOYMENT REPORT
 
-Verify:
+Provide:
 
-* JWT authentication
-* ROLE_ADMIN authorization
-* Protected APIs
-* Private storage buckets
-* No exposed secrets
-* Correct CORS
-* Validation on all endpoints
+Backend Build:
+PASS / FAIL
 
----
+Frontend Build:
+PASS / FAIL
 
-## Phase 9 — Cleanup
+Spring Boot Startup:
+PASS / FAIL
 
-Remove:
+React Startup:
+PASS / FAIL
 
-* Dead code
-* Duplicate code
-* Unused imports
-* Obsolete utilities
-* Mock data
-* Placeholder code
+Supabase PostgreSQL:
+PASS / FAIL
 
-Do not remove code that is still referenced.
+Supabase Storage:
+PASS / FAIL
 
----
+Private Payment Storage:
+PASS / FAIL
 
-## Phase 10 — Final Report
+Signed URL:
+PASS / FAIL
 
-When everything is complete, provide:
+QR Payment Flow:
+PASS / FAIL
 
-* Backend build status
-* Frontend build status
-* Spring Boot startup status
-* Frontend startup status
-* Overall completion %
-* Remaining issues
-* Files modified
-* Files restored
-* Deployment readiness
+Admin Approval:
+PASS / FAIL
 
-Do not stop until every implementable issue has been fixed.
+Security Audit:
+PASS / FAIL
+
+Deployment Ready:
+YES / NO
+
+If "NO", list every remaining blocker.
+
+If "YES", confirm that the application is ready for production deployment with real users.
+
+Do not stop until every implementable security issue has been resolved.

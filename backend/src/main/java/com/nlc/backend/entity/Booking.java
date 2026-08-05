@@ -41,11 +41,13 @@ public class Booking extends AuditableEntity {
     @Column(nullable = false, length = 32)
     private BookingStatus status = BookingStatus.PENDING;
 
+    /**
+     * Private Supabase storage object key for the uploaded payment screenshot.
+     * Never a public URL — must only be exposed via {@code StorageService.resolveViewUrl}
+     * (signed URL) to admin viewers.
+     */
     @Column(length = 600)
-    private String paymentScreenshotUrl;
-
-    @Column(length = 255)
-    private String paymentScreenshotPublicId;
+    private String paymentScreenshotObjectKey;
 
     private LocalDateTime submittedAt;
 
