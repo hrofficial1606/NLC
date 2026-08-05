@@ -12,6 +12,7 @@ export default function RegisterPage() {
     password: "",
     city: "",
     profession: "",
+    instagramProfile: "",
   });
   const [error, setError] = useState("");
 
@@ -23,7 +24,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     try {
-      await register(form);
+      const payload = { ...form };
+      // Drop empty optional strings so the backend can treat them as null.
+      if (!payload.city) delete payload.city;
+      if (!payload.profession) delete payload.profession;
+      if (!payload.instagramProfile) delete payload.instagramProfile;
+      await register(payload);
       navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -91,6 +97,15 @@ export default function RegisterPage() {
               <input type="text" value={form.profession} onChange={update("profession")} placeholder="Optional" />
             </label>
           </div>
+          <label>
+            Instagram handle (optional)
+            <input
+              type="text"
+              value={form.instagramProfile}
+              onChange={update("instagramProfile")}
+              placeholder="@yourhandle"
+            />
+          </label>
           {error ? <div className="auth-error">{error}</div> : null}
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? "Creating account..." : "Create account"}

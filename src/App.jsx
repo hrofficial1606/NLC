@@ -1,159 +1,79 @@
-import { useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import FeatureCards from "./components/FeatureCards";
-import SectionDivider from "./components/SectionDivider";
-import Events from "./components/Events";
-import Membership from "./components/Membership";
-import Creator from "./components/Creator";
-import Feedback from "./components/Feedback";
-import Sponsors from "./components/Sponsors";
-import Footer from "./components/Footer";
-import EventPage from "./components/EventPage";
-import AboutPage from "./components/AboutPage";
-import MembershipPage from "./components/MembershipPage";
-import RegisterPage from "./components/RegisterPage";
-import {
-  getCreatorProfile,
-  getEvents,
-  getMemberships,
-  getSponsors,
-  getTestimonials,
-} from "./api/placeholders";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-function getRouteFromLocation() {
-  const { pathname, search } = window.location;
-  const normalized = pathname.toLowerCase();
-  const params = new URLSearchParams(search);
+import PublicLayout from "./components/public/PublicLayout";
+import AdminLayout from "./components/admin/AdminLayout";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-  if (normalized === "/events") {
-    return { page: "events", plan: "" };
-  }
+import HomePage from "./components/public/HomePage";
+import AboutPage from "./components/public/AboutPage";
+import EventListPage from "./components/events/EventListPage";
+import EventDetailsPage from "./components/events/EventDetailsPage";
+import PublicGalleryPage from "./components/public/PublicGalleryPage";
 
-  if (normalized === "/about-us") {
-    return { page: "about", plan: "" };
-  }
+import LoginPage from "./components/auth/LoginPage";
+import RegisterPage from "./components/auth/RegisterPage";
+import MyRegistrationsPage from "./components/user/MyRegistrationsPage";
 
-  if (normalized === "/membership") {
-    return { page: "membership", plan: "" };
-  }
-
-  if (normalized === "/register") {
-    return { page: "register", plan: params.get("plan") ?? "elite" };
-  }
-
-  return { page: "home", plan: "" };
-}
+import AdminDashboardPage from "./components/admin/AdminDashboardPage";
+import AdminEventsPage from "./components/admin/AdminEventsPage";
+import AdminRegistrationsPage from "./components/admin/AdminRegistrationsPage";
+import AdminGalleryPage from "./components/admin/AdminGalleryPage";
+import AdminMembersPage from "./components/admin/AdminMembersPage";
+import AdminContentPage from "./components/admin/AdminContentPage";
+import AdminSponsorsPage from "./components/admin/AdminSponsorsPage";
+import AdminUsersPage from "./components/admin/AdminUsersPage";
 
 export default function App() {
-  const [content, setContent] = useState({
-    events: [],
-    memberships: [],
-    testimonials: [],
-    sponsors: [],
-    creator: null,
-  });
-  const [route, setRoute] = useState(() => getRouteFromLocation());
-
-  useEffect(() => {
-    async function loadContent() {
-      const [events, memberships, testimonials, sponsors, creator] = await Promise.all([
-        getEvents(),
-        getMemberships(),
-        getTestimonials(),
-        getSponsors(),
-        getCreatorProfile(),
-      ]);
-
-      setContent({ events, memberships, testimonials, sponsors, creator });
-    }
-
-    loadContent();
-  }, []);
-
-  useEffect(() => {
-    function handlePopState() {
-      setRoute(getRouteFromLocation());
-    }
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  function handleNavigate(target, options = {}) {
-    let nextPath = "/";
-
-    if (target === "events") {
-      nextPath = "/events";
-    } else if (target === "about") {
-      nextPath = "/about-us";
-    } else if (target === "membership") {
-      nextPath = "/membership";
-    } else if (target === "register") {
-      const planQuery = options.plan ? `?plan=${options.plan}` : "";
-      nextPath = `/register${planQuery}`;
-    }
-
-    window.history.pushState({}, "", nextPath);
-    setRoute(getRouteFromLocation());
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   return (
-    <div className="page-shell">
-      <Navbar currentPage={route.page} onNavigate={handleNavigate} />
+    <BrowserRouter>
+      <Routes>
+        {/* Public site */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/events" element={<EventListPage />} />
+          <Route path="/events/:id" element={<EventDetailsPage />} />
+          <Route path="/gallery" element={<PublicGalleryPage />} />
+          <Route
+            path="/my-registrations"
+            element={
+              <ProtectedRoute>
+                <MyRegistrationsPage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
 
-      {route.page === "events" ? (
-        <>
-          <main>
-            <EventPage />
-          </main>
-          <Footer variant="rich" currentPage={route.page} onNavigate={handleNavigate} />
-        </>
-      ) : null}
+        {/* Auth pages — no layout chrome */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-      {route.page === "about" ? (
-        <>
-          <main>
-            <AboutPage />
-          </main>
-          <Footer variant="rich" currentPage={route.page} onNavigate={handleNavigate} />
-        </>
-      ) : null}
+        {/* Admin panel — ROLE_ADMIN guarded at the layout level */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboardPage />} />
+          <Route path="events" element={<AdminEventsPage />} />
+          <Route path="registrations" element={<AdminRegistrationsPage />} />
+          <Route path="gallery" element={<AdminGalleryPage />} />
+          <Route path="members" element={<AdminMembersPage />} />
+          <Route path="content" element={<AdminContentPage />} />
+          <Route path="sponsors" element={<AdminSponsorsPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+        </Route>
 
-      {route.page === "membership" ? (
-        <>
-          <main>
-            <MembershipPage onNavigate={handleNavigate} />
-          </main>
-          <Footer variant="rich" currentPage={route.page} onNavigate={handleNavigate} />
-        </>
-      ) : null}
+        {/* Compatibility redirect: legacy /membership /register?plan= URLs go home */}
+        <Route path="/membership" element={<Navigate to="/" replace />} />
+        <Route path="/about-us" element={<Navigate to="/about" replace />} />
 
-      {route.page === "register" ? (
-        <>
-          <main>
-            <RegisterPage selectedPlan={route.plan} onNavigate={handleNavigate} />
-          </main>
-          <Footer variant="rich" currentPage="membership" onNavigate={handleNavigate} />
-        </>
-      ) : null}
-
-      {route.page === "home" ? (
-        <>
-          <main>
-            <Hero onNavigate={handleNavigate} />
-            <FeatureCards />
-            <SectionDivider />
-            <Events event={content.events[0]} />
-            <Membership membership={content.memberships[0]} onNavigate={handleNavigate} />
-            <Creator creator={content.creator} />
-            <Feedback testimonials={content.testimonials} />
-            <Sponsors sponsors={content.sponsors} />
-          </main>
-          <Footer currentPage={route.page} onNavigate={handleNavigate} />
-        </>
-      ) : null}
-    </div>
+        {/* 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
