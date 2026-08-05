@@ -3,7 +3,7 @@ package com.nlc.backend.service.impl;
 import com.nlc.backend.dto.booking.BookingRequest;
 import com.nlc.backend.dto.booking.BookingReviewRequest;
 import com.nlc.backend.dto.booking.BookingResponse;
-import com.nlc.backend.dto.upload.MediaUploadResponse;
+import com.nlc.backend.dto.upload.StorageUploadResult;
 import com.nlc.backend.entity.Booking;
 import com.nlc.backend.entity.Event;
 import com.nlc.backend.entity.User;
@@ -15,8 +15,8 @@ import com.nlc.backend.repository.EventRepository;
 import com.nlc.backend.repository.UserRepository;
 import com.nlc.backend.service.BookingService;
 import com.nlc.backend.service.EmailService;
-import com.nlc.backend.service.MediaStorageService;
 import com.nlc.backend.service.NotificationService;
+import com.nlc.backend.service.StorageService;
 import com.nlc.backend.service.WhatsAppService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
-    private final MediaStorageService mediaStorageService;
+    private final StorageService storageService;
     private final NotificationService notificationService;
     private final WhatsAppService whatsAppService;
 
@@ -80,11 +80,12 @@ public class BookingServiceImpl implements BookingService {
             }
             validateScreenshot(paymentScreenshot);
             if (booking.getPaymentScreenshotPublicId() != null && !booking.getPaymentScreenshotPublicId().isBlank()) {
-                mediaStorageService.delete(booking.getPaymentScreenshotPublicId());
+                storageService.delete(StorageService.PRIVATE_BUCKET, booking.getPaymentScreenshotPublicId());
             }
-            MediaUploadResponse upload = mediaStorageService.upload(paymentScreenshot, "nlc/payment-proofs");
-            booking.setPaymentScreenshotUrl(upload.secureUrl());
-            booking.setPaymentScreenshotPublicId(upload.publicId());
+            StorageUploadResult upload = storageService.uploadPrivate(
+                    paymentScreenshot, "payment-proofs", UUID.randomUUID().toString());
+            booking.setPaymentScreenshotUrl(upload.objectKey());
+            booking.setPaymentScreenshotPublicId(upload.objectKey());
             booking.setStatus(BookingStatus.PENDING);
         } else {
             booking.setPaymentScreenshotUrl(null);

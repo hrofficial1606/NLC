@@ -1,252 +1,211 @@
-# BACKEND RECOVERY MODE — DO NOT CONTINUE WITH FRONTEND UNTIL BACKEND IS STABLE
+# FINAL BUILD, TEST & RELEASE PHASE
 
-The previous verification correctly discovered that the backend is currently broken.
+The project is now mostly implemented.
 
-Do NOT continue implementing frontend features.
+Do NOT generate new features.
 
-The backend must be repaired first.
+Do NOT redesign the architecture.
 
----
+Continue from the current repository state.
 
-## CURRENT ISSUE
-
-The service layer references:
-
-Event
-
-Booking
-
-EventRepository
-
-BookingRepository
-
-but these classes are currently missing from the repository.
-
-This prevents successful compilation.
-
-Do NOT work around the problem.
-
-Fix it properly.
+Your goal is to make the repository fully buildable, testable, and production-ready.
 
 ---
 
-## STEP 1 — VERIFY THE ACTUAL DOMAIN MODEL
-
-Inspect every backend package.
-
-Determine whether:
-
-* Event
-* Booking
-
-were intentionally renamed,
-
-or
-
-accidentally deleted.
-
-Search the entire repository before restoring anything.
-
-If equivalent entities already exist under different names, adapt the services to use those entities instead of creating duplicates.
-
-Do NOT create duplicate domain models.
-
----
-
-## STEP 2 — USE GIT HISTORY
-
-Search Git history carefully.
-
-Locate the last stable implementation of:
-
-* Event.java
-* Booking.java
-* EventRepository.java
-* BookingRepository.java
-
-Restore them ONLY if they are genuinely the correct domain model.
-
-If only portions are needed, restore only the necessary code.
-
-Do not blindly copy outdated code.
-
----
-
-## STEP 3 — VERIFY SERVICES
-
-Check every service:
-
-EventServiceImpl
-
-BookingServiceImpl
-
-DashboardServiceImpl
-
-GalleryServiceImpl
-
-MemberServiceImpl
-
-NotificationServiceImpl
-
-AuthServiceImpl
-
-Ensure every injected repository actually exists.
-
-Ensure every repository method exists.
-
-If repository APIs changed, update the service layer.
-
-Do not leave broken method references.
-
----
-
-## STEP 4 — VERIFY CONTROLLERS
-
-Verify:
-
-AdminController
-
-UserController
-
-PublicController
-
-AuthController
-
-UploadController
-
-Every controller must compile.
-
-Every service injection must resolve.
-
-Every DTO must exist.
-
----
-
-## STEP 5 — VERIFY REPOSITORIES
-
-Every repository referenced by services must exist.
-
-Every custom query method must exist.
-
-Examples include methods such as:
-
-findByUserIdAndEventId
-
-findByStatusOrderByCreatedAtDesc
-
-findByUserIdOrderByCreatedAtDesc
-
-Either:
-
-* implement the repository methods,
-
-or
-
-* update the service layer to the correct repository API.
-
----
-
-## STEP 6 — VERIFY ENTITIES
-
-Verify all JPA relationships.
-
-Ensure:
-
-User
-
-Event
-
-Booking
-
-Gallery
-
-Member
-
-Content
-
-have valid mappings.
-
-Check:
-
-@OneToMany
-
-@ManyToOne
-
-@JoinColumn
-
-cascade
-
-fetch strategy
-
-mappedBy
-
-Do not leave invalid mappings.
-
----
-
-## STEP 7 — BUILD THE BACKEND
+## Phase 1 — Backend Build
 
 Run:
 
 mvn clean package
 
-Fix every compilation error.
+Resolve every compilation error.
 
-Continue rebuilding until Maven succeeds.
+Continue until Maven completes successfully.
 
 Do not stop after the first error.
 
-Resolve every subsequent error.
-
 ---
 
-## STEP 8 — START SPRING BOOT
+## Phase 2 — Spring Boot Startup
 
 Run the backend.
 
 Fix:
 
-bean creation errors
-
-repository errors
-
-JPA mapping errors
-
-entity scan errors
-
-dependency injection errors
-
-Supabase configuration errors
+* Bean creation errors
+* Entity mapping errors
+* Repository errors
+* Dependency injection errors
+* Configuration errors
+* Supabase configuration
+* Storage configuration
 
 Continue until Spring Boot starts successfully.
 
 ---
 
-## STEP 9 — ONLY AFTER BACKEND IS STABLE
+## Phase 3 — Frontend Verification
 
-Resume the previous verification work:
+Run:
 
-* frontend integration
-* API testing
-* QR flow
-* admin testing
-* documentation
-* production verification
+npm install
 
-Do not continue with frontend while the backend is broken.
+npm run build
+
+npm run dev
+
+Verify:
+
+* No console errors
+* No routing issues
+* No broken imports
+* No missing assets
 
 ---
 
-## FINAL REPORT
+## Phase 4 — API Verification
 
-Provide:
+Verify every frontend API matches the backend.
 
-* Root cause of the backend breakage.
-* Which files were restored.
-* Which files were modified.
-* Which Git commit(s) were used.
-* Backend build status.
-* Remaining compile errors (if any).
-* Whether the backend now starts successfully.
+Check:
 
-Do not claim success until the backend compiles and starts successfully.
+* Auth
+* Events
+* Bookings
+* Gallery
+* Members
+* Sponsors
+* CMS
+* Contact
+* Uploads
+* Dashboard
+
+Fix mismatches.
+
+---
+
+## Phase 5 — End-to-End Testing
+
+Test as a normal user:
+
+* Register
+* Login
+* Logout
+* Browse events
+* Register for free event
+* Register for paid event
+* Upload payment screenshot
+* View registration history
+
+---
+
+## Phase 6 — Admin Testing
+
+Login as Admin.
+
+Verify:
+
+* Dashboard
+* Users
+* Events
+* Registrations
+* Gallery
+* Members
+* Sponsors
+* CMS
+* Contact
+
+Perform complete CRUD testing.
+
+---
+
+## Phase 7 — QR Payment Workflow
+
+Verify this entire sequence:
+
+Admin creates paid event
+
+↓
+
+Admin uploads QR code
+
+↓
+
+QR stored in Supabase Storage
+
+↓
+
+User views QR
+
+↓
+
+User uploads payment screenshot
+
+↓
+
+Screenshot stored in private Supabase bucket
+
+↓
+
+Registration becomes PENDING
+
+↓
+
+Admin reviews proof
+
+↓
+
+Approve or Reject
+
+↓
+
+User sees updated status immediately
+
+Fix any broken step.
+
+---
+
+## Phase 8 — Security
+
+Verify:
+
+* JWT authentication
+* ROLE_ADMIN authorization
+* Protected APIs
+* Private storage buckets
+* No exposed secrets
+* Correct CORS
+* Validation on all endpoints
+
+---
+
+## Phase 9 — Cleanup
+
+Remove:
+
+* Dead code
+* Duplicate code
+* Unused imports
+* Obsolete utilities
+* Mock data
+* Placeholder code
+
+Do not remove code that is still referenced.
+
+---
+
+## Phase 10 — Final Report
+
+When everything is complete, provide:
+
+* Backend build status
+* Frontend build status
+* Spring Boot startup status
+* Frontend startup status
+* Overall completion %
+* Remaining issues
+* Files modified
+* Files restored
+* Deployment readiness
+
+Do not stop until every implementable issue has been fixed.

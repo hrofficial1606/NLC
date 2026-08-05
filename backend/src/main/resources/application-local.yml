@@ -1,0 +1,49 @@
+# Local-only profile. Lets the backend boot without an external Postgres or
+# a real Supabase project. Never enable this in production.
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:h2:mem:nlc;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+app:
+  storage:
+    provider: LOCAL
+    supabase:
+      url: http://localhost-disabled
+      service-role-key: local-disabled-key
+  security:
+    jwt:
+      issuer: nlc-event-management
+      access-token-secret: local-dev-access-secret-at-least-32-bytes-long
+      refresh-token-secret: local-dev-refresh-secret-at-least-32-bytes-long
+      access-token-expiration-minutes: 60
+      refresh-token-expiration-days: 7
+    cors:
+      allowed-origins:
+        - http://localhost:5173
+        - http://localhost:4173
+  frontend:
+    base-url: http://localhost:5173
+  notifications:
+    booking-email-enabled: false
+
+logging:
+  level:
+    com.nlc.backend: DEBUG
+
+management:
+  health:
+    mail:
+      enabled: false
