@@ -1,5 +1,6 @@
 // Centralized API base URL via Vite env. Defaults to local Spring Boot.
-const RAW_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+const RAW_BASE =
+  import.meta.env.VITE_API_BASE_URL || "/api";
 // Strip any trailing slash so we can safely append paths.
 export const API_BASE_URL = RAW_BASE.replace(/\/+$/, "");
 
