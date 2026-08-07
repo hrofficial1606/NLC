@@ -84,7 +84,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(() => {
-    const isAdmin = Array.isArray(user?.roles) && user.roles.includes("ROLE_ADMIN");
+   const isAdmin =
+  Array.isArray(user?.roles) &&
+  (
+    user.roles.includes("ADMIN") ||
+    user.roles.includes("ROLE_ADMIN")
+  );
     return {
       user,
       isAuthenticated: Boolean(user),
