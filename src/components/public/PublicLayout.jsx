@@ -15,7 +15,7 @@ export default function PublicLayout() {
       <header className="public-header">
         <div className="container public-header__inner">
           <Link to="/" className="public-header__brand">
-            <img src="/images/nlc-logo.png" alt="NLC" className="public-header__logo" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+            <img src="/images/nlc-logo.jpeg" alt="NLC" className="public-header__logo" onError={(e) => { e.currentTarget.style.display = "none"; }} />
             <span>Nagpur Ladies Club</span>
           </Link>
           <button type="button" className="public-header__burger" aria-label="Menu" onClick={() => setOpen((o) => !o)}>
