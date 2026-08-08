@@ -1,477 +1,614 @@
-# NAGPUR LADIES CLUB — FINAL PRODUCTION SECURITY & DEPLOYMENT READINESS
+# NLC — RECHECK MEMBERS & SPONSORS USING THE CORRECT FIGMA DESIGN FILE
 
-The project is approximately 98% complete.
+This is a CONTINUATION of the previous NLC task.
 
-DO NOT redesign the application.
+The Members and Sponsors frontend pages have already been implemented.
 
-DO NOT regenerate existing features.
+DO NOT rebuild them from scratch.
 
-DO NOT recreate components.
+DO NOT undo the existing work.
 
-Continue ONLY from the current repository state.
+DO NOT modify the backend.
 
-The backend builds successfully.
+DO NOT modify Supabase.
 
-The frontend builds successfully.
+DO NOT modify authentication.
 
-Spring Boot starts successfully.
+DO NOT modify payment functionality.
 
-Frontend starts successfully.
-
-Most APIs have already been verified.
-
-The remaining objective is to make the project PRODUCTION READY.
+DO NOT modify the admin backend.
 
 ---
 
-# PRIMARY OBJECTIVE
+## CORRECT FIGMA DESIGN FILE
 
-Complete the remaining security work for the QR payment workflow.
+The previous task used the WRONG Figma prototype URL.
 
-Payment screenshots MUST NEVER be publicly accessible.
+Use this NEW and CORRECT Figma Design file:
 
-The application must be production-ready after this task.
+https://www.figma.com/design/NhFoYkGYZVGiJZg5Ama5J2/Untitled?node-id=1-3&t=tPEj2perOcNzu94Q-1
 
----
+IMPORTANT:
 
-# STEP 1 — COMPLETE PRIVATE PAYMENT STORAGE
+The previous implementation could not inspect the Figma visuals because the previous URL was a prototype link that was not accessible to the environment.
 
-Inspect the current implementation of:
+This time:
 
-BookingServiceImpl
+1. Open the new Design URL.
+2. Inspect the actual Figma file.
+3. Identify the relevant frames.
+4. Identify the actual Members design.
+5. Identify the actual Sponsors design.
+6. Identify member posters/photos.
+7. Identify sponsor logos.
+8. Identify banners/backgrounds.
+9. Identify decorative elements.
+10. Identify typography, colors, spacing and responsive layouts.
 
-StorageService
+DO NOT assume the Figma design.
 
-SupabaseStorageService
-
-MediaStorageService
-
-UploadController
-
-BookingResponse
-
-Booking entity
-
-AdminController
-
-Do NOT create duplicate storage services.
-
-Use the existing StorageService implementation.
-
-Payment screenshots MUST be uploaded using:
-
-StorageService.uploadPrivate(...)
-
-NOT public upload methods.
+Use the actual Figma file as the visual source of truth.
 
 ---
 
-# STEP 2 — STORE OBJECT KEYS, NOT PUBLIC URLS
+# IMPORTANT — PRESERVE CURRENT IMPLEMENTATION
 
-Do NOT save a permanent public URL.
+Before changing anything:
 
-Persist only the private storage object key.
+Inspect the current implementation.
+
+The following already exists:
+
+/members
+
+/sponsors
+
+MemberCard.jsx
+
+MembersPage.jsx
+
+SponsorsPage.jsx
+
+SponsorsTiers.jsx
+
+Home Members section
+
+Home Sponsors section
+
+Existing Members API
+
+Existing Sponsors API
+
+DO NOT delete these.
+
+Improve them based on the actual Figma design.
+
+---
+
+# EXISTING BACKEND — READ ONLY
+
+The existing APIs are already implemented.
+
+Members:
+
+memberApi.getTeamMembers()
+
+Sponsors:
+
+contentApi.getSponsors()
+
+Admin sponsor management already exists.
+
+Use the existing APIs.
+
+DO NOT create duplicate APIs.
+
+DO NOT create fake member data.
+
+DO NOT create fake sponsor data.
+
+DO NOT change backend models.
+
+---
+
+# FIGMA ASSETS
+
+Inspect the actual Figma file and determine whether its images/assets can be accessed.
+
+If the Figma integration/environment allows asset export:
+
+export/download the required assets.
+
+Place them under:
+
+public/images/members/
+
+public/images/sponsors/
+
+public/images/community/
+
+Use meaningful filenames.
 
 Examples:
 
-paymentScreenshotObjectKey
+members-hero-poster.webp
 
-paymentScreenshotStorageKey
+member-photo-01.webp
 
-or the existing equivalent field.
+member-photo-02.webp
 
-Do not expose the storage key in normal user responses.
+sponsors-hero-banner.webp
 
----
+sponsor-logo-brand-name.webp
 
-# STEP 3 — ADMIN SIGNED URL ENDPOINT
+home-community-decoration.webp
 
-Implement an ADMIN ONLY endpoint.
+IMPORTANT:
 
-Example:
+Use the ACTUAL assets from this Figma file.
 
-GET /api/admin/bookings/{id}/payment-proof
+Do NOT use random Unsplash images.
 
-Workflow:
+Do NOT use random Google images.
 
-Admin JWT
+Do NOT invent sponsor logos.
 
-↓
-
-ROLE_ADMIN validation
-
-↓
-
-Booking exists
-
-↓
-
-Booking has payment screenshot
-
-↓
-
-Generate Supabase signed URL
-
-↓
-
-Return temporary signed URL
-
-Signed URL should expire after a short period (for example 5–15 minutes).
-
-Never return a permanent public URL.
+Do NOT invent member photographs.
 
 ---
 
-# STEP 4 — USER ACCESS RULES
+# IF FIGMA ASSETS ARE STILL NOT ACCESSIBLE
 
-Normal users:
+Do NOT stop the whole task.
 
-May upload payment screenshots.
+Do NOT use random images.
 
-May see upload status.
+Instead:
 
-May see booking status.
+1. Recreate the layout accurately from the accessible Figma information.
+2. Keep the existing fallback behavior.
+3. Tell me exactly which assets need to be manually exported.
 
-Must NOT receive signed URLs.
+For every missing asset report:
 
-Must NOT access another user's screenshot.
+filename
 
-Users should see:
+Figma frame
 
-"Payment proof uploaded successfully."
+recommended folder
 
-not the storage object.
-
----
-
-# STEP 5 — ADMIN REVIEW FLOW
-
-Admin opens pending booking.
-
-Backend generates temporary signed URL.
-
-Admin views screenshot.
-
-Admin approves or rejects.
-
-Signed URL should be generated on demand.
-
-Never permanently store signed URLs.
+where it is used
 
 ---
 
-# STEP 6 — SUPABASE STORAGE SECURITY
+# MEMBERS PAGE
 
-Verify bucket permissions.
+Review:
 
-Expected architecture:
+/members
 
-PUBLIC
+Compare it against the actual Figma Members design.
 
-event-images
+Update ONLY what is necessary.
 
-gallery
+Match:
 
-member-images
+Hero
 
-event-qr
+Poster
 
-PRIVATE
+Member cards
 
-payment-proofs
+Images
 
-Payment proofs must never become publicly accessible.
+Typography
 
----
+Colors
 
-# STEP 7 — DELETE OLD SCREENSHOTS
+Spacing
 
-If user uploads a replacement screenshot:
+Decorations
 
-Delete previous private object.
+CTA
 
-Upload new screenshot.
+Responsive behavior
 
-Update database.
+Use existing backend member data.
 
-Status returns to PENDING.
+If a member has:
 
-Avoid orphan files.
+imageUrl
 
----
+or
 
-# STEP 8 — TEST COMPLETE PAID FLOW
+photoUrl
 
-Run the complete workflow.
+use it.
 
-Admin
+If no backend image exists and there is a matching Figma image:
 
-↓
+use the Figma image as the frontend fallback.
 
-Create Paid Event
-
-↓
-
-Upload QR
-
-↓
-
-Publish Event
-
-↓
-
-User Registers
-
-↓
-
-Pay via QR
-
-↓
-
-Upload Screenshot
-
-↓
-
-Screenshot stored in PRIVATE bucket
-
-↓
-
-Booking PENDING
-
-↓
-
-Admin requests signed URL
-
-↓
-
-Screenshot visible
-
-↓
-
-Approve
-
-↓
-
-User sees APPROVED
-
-Repeat the same flow for REJECT.
+Do not replace real backend data.
 
 ---
 
-# STEP 9 — VERIFY SECURITY
+# SPONSORS PAGE
 
-Attempt the following:
+Review:
 
-Unauthenticated user requests payment proof
+/sponsors
 
-Expected:
+Compare it against the actual Figma Sponsors design.
 
-401
+Match:
 
-Normal user requests another user's proof
+Hero
 
-Expected:
+Sponsor banner
 
-403
+Sponsor logos
 
-Normal user requests admin endpoint
+Sponsor cards
 
-Expected:
+Sponsor tiers
 
-403
+Typography
 
-Expired signed URL
+Spacing
 
-Expected:
+Decorations
 
-Access denied
+CTA
 
-Only ROLE_ADMIN should receive signed URLs.
+Responsive behavior
 
----
+Use the existing backend sponsor data.
 
-# STEP 10 — VERIFY SUPABASE
+Existing tiers are:
 
-Verify:
+PLATINUM
 
-Private bucket uploads
+GOLD
 
-Signed URL generation
+SILVER
 
-Delete object
+BRONZE
 
-Replace object
-
-Error handling
-
-Missing object handling
-
-Expired URL handling
+Do NOT invent new tiers.
 
 ---
 
-# STEP 11 — END-TO-END TESTING
+# HOME PAGE
 
-Verify:
+Review the existing:
 
-User Registration
+Members
 
-Login
+Sponsors
 
-Logout
+section on Home.
 
-JWT
+If the Figma design contains a different community section:
 
-Protected Routes
+update the frontend to match it.
 
-Create Event
+Keep the compact Home experience.
 
-Free Registration
+Keep:
 
-Paid Registration
+View All Members → /members
 
-QR Display
+View All Sponsors → /sponsors
 
-Screenshot Upload
+---
 
-Pending Status
+# NAVIGATION
 
-Approve
+Keep:
 
-Reject
+Home
 
-Resubmit
+About
+
+Events
+
+Gallery
+
+Membership
+
+Members
+
+Sponsors
+
+Digital Marketing
+
+Login/Register
+
+Do not break the existing mobile navigation.
+
+---
+
+# PAYMENT — DO NOT TOUCH
+
+The existing event payment system is correct.
+
+FREE EVENT:
+
+Registration → no payment.
+
+PAID EVENT:
+
+QR/UPI → external payment → screenshot upload → PENDING → Admin approve/reject.
+
+Do NOT add:
+
+Razorpay
+
+Stripe
+
+PayPal
+
+Checkout
+
+Membership payment
+
+Membership QR payment
+
+The Membership page remains NON-PAYMENT.
+
+---
+
+# ADMIN — DO NOT TOUCH
+
+The existing Admin Panel already contains:
+
+Admin Dashboard
+
+Events
+
+Registrations
 
 Gallery
 
 Members
 
-CMS
+Content
 
-Admin Dashboard
+Sponsors
 
-Every tested feature should either PASS or be fixed.
+Users
 
----
+Keep all of it unchanged.
 
-# STEP 12 — CLEANUP
+Do not redesign the admin panel in this task.
 
-Search repository for:
-
-paymentScreenshotUrl
-
-public URL
-
-temporary workaround
-
-TODO
-
-FIXME
-
-Remove obsolete code.
-
-Do not leave duplicate storage logic.
+Do not modify admin APIs.
 
 ---
 
-# STEP 13 — DEPLOYMENT READINESS
+# SUPABASE — DO NOT TOUCH
 
-Verify production configuration.
+Supabase is already the project's database/backend infrastructure.
+
+Do not change:
+
+database schema
+
+tables
+
+RLS
+
+authentication
+
+storage policies
+
+service role
+
+environment variables
+
+---
+
+# SECURITY
+
+Do not expose:
+
+SUPABASE_SERVICE_ROLE_KEY
+
+JWT_SECRET
+
+DB_PASSWORD
+
+private credentials
+
+Only client-safe environment variables may exist in the frontend.
+
+---
+
+# IMAGE QUALITY
+
+Use:
+
+WebP where appropriate
+
+optimized images
+
+responsive image sizing
+
+lazy loading for non-hero images
+
+proper alt text
+
+Do not stretch images.
+
+Do not distort logos.
+
+Do not crop important faces.
+
+---
+
+# RESPONSIVE DESIGN
+
+Verify:
+
+Desktop
+
+Laptop
+
+Tablet
+
+Mobile
+
+Small mobile
 
 Check:
 
-Supabase environment variables
+hero
 
-JWT Secret
+posters
 
-CORS
+member cards
 
-Storage buckets
+sponsor cards
 
-Database URL
+logos
 
-Production profile
+navigation
 
-No localhost URLs
+CTA
 
-No debug configuration
-
-No hardcoded credentials
-
-No test accounts
-
-No development secrets
+No horizontal scrolling.
 
 ---
 
-# STEP 14 — UPDATE DOCUMENTATION
+# CODE QUALITY
 
-Update:
+Use reusable components.
 
-PROJECT_STATUS.md
+Do not duplicate large JSX blocks.
 
-PROJECT_AUDIT.md
+Do not create unnecessary dependencies.
 
-README.md
+Do not rewrite the entire CSS file.
 
-Document:
-
-Private payment proof storage
-
-Signed URL implementation
-
-Admin review flow
-
-Required Supabase buckets
-
-Required environment variables
-
-Deployment checklist
+Reuse existing NLC design tokens.
 
 ---
 
-# STEP 15 — FINAL DEPLOYMENT REPORT
+# PROTECTION CHECK
 
-Provide:
+Before modifications:
 
-Backend Build:
-PASS / FAIL
+git status
 
-Frontend Build:
-PASS / FAIL
+Then make changes.
 
-Spring Boot Startup:
-PASS / FAIL
+After modifications:
 
-React Startup:
-PASS / FAIL
+git status
 
-Supabase PostgreSQL:
-PASS / FAIL
+git diff --name-only
 
-Supabase Storage:
-PASS / FAIL
+git diff --stat
 
-Private Payment Storage:
-PASS / FAIL
+Expected changes should primarily be:
 
-Signed URL:
-PASS / FAIL
+src/
 
-QR Payment Flow:
-PASS / FAIL
+public/images/
 
-Admin Approval:
-PASS / FAIL
+Do NOT modify:
 
-Security Audit:
-PASS / FAIL
+backend/
 
-Deployment Ready:
-YES / NO
+pom.xml
 
-If "NO", list every remaining blocker.
+database
 
-If "YES", confirm that the application is ready for production deployment with real users.
+Supabase configuration
 
-Do not stop until every implementable security issue has been resolved.
+authentication
+
+payment backend
+
+admin backend
+
+---
+
+# BUILD
+
+Run:
+
+npm run build
+
+The build MUST PASS.
+
+Fix all frontend errors.
+
+---
+
+# FINAL REPORT
+
+Give me a clear report:
+
+## Figma
+
+Correct Design URL inspected: YES/NO
+
+Figma visual content accessible: YES/NO
+
+Assets accessible: YES/NO
+
+## Members
+
+Existing page preserved: YES/NO
+
+Figma design applied: YES/NO
+
+Figma images integrated: YES/NO
+
+Existing Members API preserved: YES/NO
+
+## Sponsors
+
+Existing page preserved: YES/NO
+
+Figma design applied: YES/NO
+
+Figma logos integrated: YES/NO
+
+Existing Sponsors API preserved: YES/NO
+
+## Home
+
+Members section updated: YES/NO
+
+Sponsors section updated: YES/NO
+
+## Backend Safety
+
+Backend modified: YES/NO
+
+Supabase modified: YES/NO
+
+Database modified: YES/NO
+
+Authentication modified: YES/NO
+
+Payment modified: YES/NO
+
+Admin backend modified: YES/NO
+
+## Build
+
+npm run build: PASS/FAIL
+
+## Manual Assets
+
+If any Figma assets could not be extracted, give me the exact list and where each file must be placed.
+
+IMPORTANT:
+
+Do not claim the Figma implementation is complete unless you actually inspected the correct Design file.
+
+Do not replace unavailable Figma assets with random images.

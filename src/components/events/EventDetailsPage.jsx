@@ -136,25 +136,32 @@ export default function EventDetailsPage() {
             <div className="event-details__hero">
               <img src={event.bannerImageUrl} alt={event.title} />
             </div>
-          ) : null}
+          ) : (
+            <div className="event-details__hero">
+              <div className="event-details__placeholder" aria-hidden="true">✦</div>
+            </div>
+          )}
 
           <div className="event-details__head">
-            <span className={`event-list-card__badge ${event.paidEvent ? "is-paid" : "is-free"}`}>
+            <span className={`event-card__badge ${event.paidEvent ? "is-paid" : "is-free"}`}>
               {event.paidEvent ? "Paid" : "Free"}
             </span>
             <h1>{event.title}</h1>
-            <p className="event-details__when">
-              {formatDate(event.eventDate)} • {event.location}
-            </p>
+            <div className="event-details__meta-row">
+              <span>📅 {formatDate(event.eventDate)}</span>
+              <span>📍 {event.location}</span>
+              {event.availableSeats ? <span>👤 {event.availableSeats} seats left</span> : null}
+            </div>
             {event.paidEvent ? (
               <p className="event-details__price">
                 Registration fee: ₹{Number(event.ticketPrice || 0).toLocaleString("en-IN")}
               </p>
             ) : null}
             {event.registrationDeadline ? (
-              <p className="event-details__deadline">
-                Registration deadline: {formatDate(event.registrationDeadline)}
-                {deadlinePassed ? <strong> (passed)</strong> : null}
+              <p className="event-details__meta-row">
+                <span>⏰ Registration deadline: {formatDate(event.registrationDeadline)}
+                  {deadlinePassed ? <strong> (passed)</strong> : null}
+                </span>
               </p>
             ) : null}
           </div>
@@ -185,7 +192,7 @@ export default function EventDetailsPage() {
 
                 {event.paidEvent ? (
                   <div className="event-registration__paid">
-                    <h3>Pay via QR / UPI</h3>
+                    <h3>💗 Pay via QR / UPI</h3>
                     <ol className="event-registration__steps">
                       <li>Scan the QR code below or use the UPI ID.</li>
                       <li>Pay the registration fee of ₹{Number(event.ticketPrice || 0).toLocaleString("en-IN")}.</li>

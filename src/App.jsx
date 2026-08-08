@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import PublicLayout from "./components/public/PublicLayout";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -9,6 +9,10 @@ import AboutPage from "./components/public/AboutPage";
 import EventListPage from "./components/events/EventListPage";
 import EventDetailsPage from "./components/events/EventDetailsPage";
 import PublicGalleryPage from "./components/public/PublicGalleryPage";
+import MembershipPage from "./components/public/MembershipPage";
+import NotFoundPage from "./components/public/NotFoundPage";
+import MembersPage from "./components/public/MembersPage";
+import SponsorsPage from "./components/public/SponsorsPage";
 
 import LoginPage from "./components/auth/LoginPage";
 import RegisterPage from "./components/auth/RegisterPage";
@@ -34,6 +38,9 @@ export default function App() {
           <Route path="/events" element={<EventListPage />} />
           <Route path="/events/:id" element={<EventDetailsPage />} />
           <Route path="/gallery" element={<PublicGalleryPage />} />
+          <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/members" element={<MembersPage />} />
+          <Route path="/sponsors" element={<SponsorsPage />} />
           <Route
             path="/my-registrations"
             element={
@@ -67,12 +74,8 @@ export default function App() {
           <Route path="users" element={<AdminUsersPage />} />
         </Route>
 
-        {/* Compatibility redirect: legacy /membership /register?plan= URLs go home */}
-        <Route path="/membership" element={<Navigate to="/" replace />} />
-        <Route path="/about-us" element={<Navigate to="/about" replace />} />
-
         {/* 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
