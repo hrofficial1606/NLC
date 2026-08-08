@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { memberApi } from "../../api";
 import MemberCard from "./MemberCard";
+import { galleryImageUrls } from "./galleryLocal";
 
 export default function MembersPage() {
   const [members, setMembers] = useState([]);
@@ -101,23 +102,20 @@ export default function MembersPage() {
             </p>
           </div>
           <div className="members-banners__grid">
-            {Array.from({ length: 16 }, (_, i) => {
-              const num = String(i + 1).padStart(2, "0");
-              return (
-                <figure
-                  key={num}
-                  className="members-banner"
-                  style={{ "--banner-index": i }}
-                >
-                  <img
-                    src={`/images/members/member-photo-${num}.webp`}
-                    alt={`NLC member portrait ${i + 1}`}
-                    loading="lazy"
-                    onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
-                  />
-                </figure>
-              );
-            })}
+            {galleryImageUrls.slice(0, 16).map((src, i) => (
+              <figure
+                key={src}
+                className="members-banner"
+                style={{ "--banner-index": i }}
+              >
+                <img
+                  src={src}
+                  alt={`NLC member portrait ${i + 1}`}
+                  loading="lazy"
+                  onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
+                />
+              </figure>
+            ))}
           </div>
         </div>
       </section>

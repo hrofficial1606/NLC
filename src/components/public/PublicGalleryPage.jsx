@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { galleryApi } from "../../api";
+import { fallbackItems } from "./galleryLocal";
 
 export default function PublicGalleryPage() {
   const [items, setItems] = useState([]);
@@ -28,6 +29,10 @@ export default function PublicGalleryPage() {
     };
   }, []);
 
+  // When the backend has no items, fall back to the static /images/gallery set
+  // so the public gallery page is never blank.
+  const displayItems = items.length > 0 ? items : fallbackItems;
+
   return (
     <main className="page gallery-page">
       <div className="container">
@@ -43,7 +48,7 @@ export default function PublicGalleryPage() {
         {error ? <div className="alert alert-error">{error}</div> : null}
         {loading ? <p className="page-loading">Loading gallery…</p> : null}
 
-        {!loading && items.length === 0 ? (
+        {!loading && items.length === 0 && fallbackItems.length === 0 ? (
           <div className="empty-card">
             <span className="empty-card__mark">Gallery</span>
             <h3>Our gallery is growing</h3>
@@ -55,9 +60,9 @@ export default function PublicGalleryPage() {
           </div>
         ) : null}
 
-        {!loading && items.length > 0 ? (
+        {!loading && displayItems.length > 0 ? (
           <div className="gallery-masonry">
-            {items.map((item) => (
+            {displayItems.map((item) => (
               <button
                 key={item.id}
                 type="button"

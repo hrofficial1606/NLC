@@ -1,0 +1,91 @@
+// Shared gallery image list served from /public/images/gallery.
+//
+// Vite's `import.meta.glob` only resolves relative patterns from inside src/,
+// so we list filenames explicitly and prefix them with the public asset path.
+// Run `node scripts/sync-gallery-list.js` to regenerate this array from
+// /public/images/gallery/* after adding new files.
+const galleryFiles = [
+  "WhatsApp Image 2026-08-08 at 2.43.13 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.13 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.15 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.15 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.16 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.16 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.16 PM (3).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.16 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.17 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.17 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.17 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.18 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.18 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.19 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.20 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.21 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.21 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.23 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.24 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.24 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.25 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.25 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.26 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.26 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.26 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.27 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.28 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.28 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.29 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.30 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.30 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.31 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.33 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.34 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.34 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.35 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.35 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.35 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.36 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.36 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.37 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.38 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.38 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.39 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.41 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.41 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.41 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.42 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.43 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.44 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.44 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.45 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.45 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.45 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.46 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.47 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.47 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.48 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.48 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.48 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.49 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.49 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.49 PM.jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.50 PM (1).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.50 PM (2).jpeg",
+  "WhatsApp Image 2026-08-08 at 2.43.50 PM.jpeg",
+];
+
+// Encode each segment so spaces and parentheses survive as a valid URL.
+export function encodeGalleryPath(fileName) {
+  return `/images/gallery/${encodeURIComponent(fileName)}`;
+}
+
+export const galleryImageUrls = galleryFiles.map(encodeGalleryPath);
+
+export const fallbackItems = galleryFiles.map((fileName, index) => ({
+  id: `local-${index}`,
+  title: "",
+  category: "",
+  mediaUrl: encodeGalleryPath(fileName),
+  thumbnailUrl: encodeGalleryPath(fileName),
+  mediaType: "IMAGE",
+  sourceType: "MANUAL_UPLOAD",
+}));
