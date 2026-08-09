@@ -5,7 +5,9 @@ import SponsorsTiers from "./SponsorsTiers";
 
 // Sponsor logos pulled from the Sponsers reference folder. These display alongside
 // (not in place of) the backend sponsor data — admin-managed sponsors continue
-// to drive the tiered section above.
+// to drive the tiered section above. Mirrors the actual file set on disk
+// (sponsor-logo-01 … sponsor-logo-38 minus 09, 13, 14, 15, 37, which were
+// removed as duplicates).
 const SPONSOR_LOGOS = [
   { id: "logo-01", src: "/images/sponsors/sponsor-logo-01.png", alt: "NLC sponsor logo 1", caption: "Trusted Partner" },
   { id: "logo-02", src: "/images/sponsors/sponsor-logo-02.png", alt: "NLC sponsor logo 2", caption: "Trusted Partner" },
@@ -15,13 +17,9 @@ const SPONSOR_LOGOS = [
   { id: "logo-06", src: "/images/sponsors/sponsor-logo-06.png", alt: "NLC sponsor logo 6", caption: "Trusted Partner" },
   { id: "logo-07", src: "/images/sponsors/sponsor-logo-07.png", alt: "NLC sponsor logo 7", caption: "Trusted Partner" },
   { id: "logo-08", src: "/images/sponsors/sponsor-logo-08.png", alt: "NLC sponsor logo 8", caption: "Trusted Partner" },
-  { id: "logo-09", src: "/images/sponsors/sponsor-logo-09.png", alt: "NLC sponsor logo 9", caption: "Trusted Partner" },
   { id: "logo-10", src: "/images/sponsors/sponsor-logo-10.png", alt: "NLC sponsor logo 10", caption: "Trusted Partner" },
   { id: "logo-11", src: "/images/sponsors/sponsor-logo-11.png", alt: "NLC sponsor logo 11", caption: "Trusted Partner" },
   { id: "logo-12", src: "/images/sponsors/sponsor-logo-12.png", alt: "NLC sponsor logo 12", caption: "Trusted Partner" },
-  { id: "logo-13", src: "/images/sponsors/sponsor-logo-13.png", alt: "NLC sponsor logo 13", caption: "Trusted Partner" },
-  { id: "logo-14", src: "/images/sponsors/sponsor-logo-14.png", alt: "NLC sponsor logo 14", caption: "Trusted Partner" },
-  { id: "logo-15", src: "/images/sponsors/sponsor-logo-15.png", alt: "NLC sponsor logo 15", caption: "Trusted Partner" },
   { id: "logo-16", src: "/images/sponsors/sponsor-logo-16.png", alt: "NLC sponsor logo 16", caption: "Trusted Partner" },
   { id: "logo-17", src: "/images/sponsors/sponsor-logo-17.png", alt: "NLC sponsor logo 17", caption: "Trusted Partner" },
   { id: "logo-18", src: "/images/sponsors/sponsor-logo-18.png", alt: "NLC sponsor logo 18", caption: "Trusted Partner" },
@@ -33,7 +31,17 @@ const SPONSOR_LOGOS = [
   { id: "logo-24", src: "/images/sponsors/sponsor-logo-24.png", alt: "NLC sponsor logo 24", caption: "Trusted Partner" },
   { id: "logo-25", src: "/images/sponsors/sponsor-logo-25.png", alt: "NLC sponsor logo 25", caption: "Trusted Partner" },
   { id: "logo-26", src: "/images/sponsors/sponsor-logo-26.png", alt: "NLC sponsor logo 26", caption: "Trusted Partner" },
-  { id: "logo-27", src: "/images/sponsors/sponsor-logo-27.png", alt: "NLC sponsor logo 27", caption: "Trusted Partner" },
+  { id: "logo-27", src: "/images/sponsors/sponsor-logo-27.jpeg", alt: "NLC sponsor logo 27", caption: "Trusted Partner" },
+  { id: "logo-28", src: "/images/sponsors/sponsor-logo-28.jpeg", alt: "NLC sponsor logo 28", caption: "Trusted Partner" },
+  { id: "logo-29", src: "/images/sponsors/sponsor-logo-29.png", alt: "NLC sponsor logo 29", caption: "Trusted Partner" },
+  { id: "logo-30", src: "/images/sponsors/sponsor-logo-30.jpeg", alt: "NLC sponsor logo 30", caption: "Trusted Partner" },
+  { id: "logo-31", src: "/images/sponsors/sponsor-logo-31.jpeg", alt: "NLC sponsor logo 31", caption: "Trusted Partner" },
+  { id: "logo-32", src: "/images/sponsors/sponsor-logo-32.jpeg", alt: "NLC sponsor logo 32", caption: "Trusted Partner" },
+  { id: "logo-33", src: "/images/sponsors/sponsor-logo-33.jpeg", alt: "NLC sponsor logo 33", caption: "Trusted Partner" },
+  { id: "logo-34", src: "/images/sponsors/sponsor-logo-34.jpeg", alt: "NLC sponsor logo 34", caption: "Trusted Partner" },
+  { id: "logo-35", src: "/images/sponsors/sponsor-logo-35.jpeg", alt: "NLC sponsor logo 35", caption: "Trusted Partner" },
+  { id: "logo-36", src: "/images/sponsors/sponsor-logo-36.jpeg", alt: "NLC sponsor logo 36", caption: "Trusted Partner" },
+  { id: "logo-38", src: "/images/sponsors/sponsor-logo-38.png", alt: "NLC sponsor logo 38", caption: "Trusted Partner" },
 ];
 
 export default function SponsorsPage() {
