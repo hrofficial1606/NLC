@@ -32,6 +32,26 @@ public class GalleryMedia extends AuditableEntity {
     @Column(length = 180)
     private String externalMediaId;
 
+    /**
+     * Public identifier of the underlying object in the configured storage
+     * provider. For Cloudinary this is the Cloudinary {@code public_id} (used
+     * to safely replace or delete the asset). For Supabase it's the object
+     * key. Null when the admin provided a manual external URL.
+     *
+     * <p>Nullable so existing rows with manual URLs / legacy Supabase URLs
+     * continue to work without backfill.
+     */
+    @Column(length = 500)
+    private String storagePublicId;
+
+    /**
+     * Identifies which storage provider owns the asset, so delete can be
+     * safely routed (CLOUDINARY, SUPABASE, or null for external URLs).
+     * Nullable for backward compatibility with existing rows.
+     */
+    @Column(length = 32)
+    private String storageProvider;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)
     private MediaType mediaType = MediaType.IMAGE;

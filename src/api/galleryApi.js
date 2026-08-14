@@ -19,3 +19,28 @@ export function updateGalleryItem(id, payload) {
 export function deleteGalleryItem(id) {
   return apiFetch(`/admin/gallery/${id}`, { method: "DELETE" });
 }
+
+/**
+ * Uploads an image file to the active storage provider (Cloudinary when
+ * configured, Supabase otherwise) and returns:
+ *   { publicId, secureUrl, resourceType }
+ *
+ * The response shape is unified regardless of provider so the admin UI can
+ * forward the values straight to createGalleryItem. Folder is one of:
+ * "gallery", "events", "members", "sponsors".
+ */
+export async function uploadMedia(file, folder = "gallery") {
+  const form = new FormData();
+  form.append("file", file);
+  return apiFetch(`/admin/uploads?folder=${encodeURIComponent(folder)}`, {
+    method: "POST",
+    body: form,
+    isForm: true,
+  });
+}
+
+export function deleteMedia(publicId) {
+  return apiFetch(`/admin/uploads/${encodeURIComponent(publicId)}`, {
+    method: "DELETE",
+  });
+}

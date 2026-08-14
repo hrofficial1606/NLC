@@ -11,6 +11,8 @@ public record GalleryMediaResponse(
         String mediaType,
         String sourceType,
         boolean active,
+        String storagePublicId,
+        String storageProvider,
         LocalDateTime createdAt
 ) {
 }

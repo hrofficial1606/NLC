@@ -1,614 +1,114 @@
-# NLC — RECHECK MEMBERS & SPONSORS USING THE CORRECT FIGMA DESIGN FILE
+Continue from the EXACT current project state.
 
-This is a CONTINUATION of the previous NLC task.
+The previous session stopped because of a 429 usage/session limit while trying to run the final verification.
 
-The Members and Sponsors frontend pages have already been implemented.
+DO NOT redo the Cloudinary implementation.
 
-DO NOT rebuild them from scratch.
+DO NOT rewrite AdminGalleryPage.jsx.
 
-DO NOT undo the existing work.
+DO NOT revert any completed changes.
 
-DO NOT modify the backend.
+First inspect:
 
-DO NOT modify Supabase.
+git status
+git diff --stat
+git diff --name-only
 
-DO NOT modify authentication.
+The following work has already been completed:
 
-DO NOT modify payment functionality.
+- Existing Cloudinary/Gallery architecture inspected
+- Cloudinary integration work implemented
+- AdminGalleryPage.jsx updated with Cloudinary upload flow
+- PublicGalleryPage rendering verified
+- Home page gallery rendering verified
+- Other Cloudinary integration tasks completed
 
-DO NOT modify the admin backend.
+The remaining tasks are ONLY:
 
----
+1. Verify backend compilation/build.
+2. Verify frontend build.
+3. Inspect final git changes.
+4. Report the final implementation status.
 
-## CORRECT FIGMA DESIGN FILE
+IMPORTANT: Do not spend time trying to install Maven through Chocolatey, Winget, or downloading large packages unless absolutely necessary.
 
-The previous task used the WRONG Figma prototype URL.
+First check whether the repository already contains:
 
-Use this NEW and CORRECT Figma Design file:
+mvnw
+mvnw.cmd
+.mvn/
 
-https://www.figma.com/design/NhFoYkGYZVGiJZg5Ama5J2/Untitled?node-id=1-3&t=tPEj2perOcNzu94Q-1
+If Maven Wrapper exists, use:
 
-IMPORTANT:
+Windows:
+.\mvnw.cmd clean test
 
-The previous implementation could not inspect the Figma visuals because the previous URL was a prototype link that was not accessible to the environment.
+or:
 
-This time:
+.\mvnw.cmd clean package -DskipTests
 
-1. Open the new Design URL.
-2. Inspect the actual Figma file.
-3. Identify the relevant frames.
-4. Identify the actual Members design.
-5. Identify the actual Sponsors design.
-6. Identify member posters/photos.
-7. Identify sponsor logos.
-8. Identify banners/backgrounds.
-9. Identify decorative elements.
-10. Identify typography, colors, spacing and responsive layouts.
-
-DO NOT assume the Figma design.
-
-Use the actual Figma file as the visual source of truth.
-
----
-
-# IMPORTANT — PRESERVE CURRENT IMPLEMENTATION
-
-Before changing anything:
-
-Inspect the current implementation.
-
-The following already exists:
-
-/members
-
-/sponsors
-
-MemberCard.jsx
-
-MembersPage.jsx
-
-SponsorsPage.jsx
-
-SponsorsTiers.jsx
-
-Home Members section
-
-Home Sponsors section
-
-Existing Members API
-
-Existing Sponsors API
-
-DO NOT delete these.
-
-Improve them based on the actual Figma design.
-
----
-
-# EXISTING BACKEND — READ ONLY
-
-The existing APIs are already implemented.
-
-Members:
-
-memberApi.getTeamMembers()
-
-Sponsors:
-
-contentApi.getSponsors()
-
-Admin sponsor management already exists.
-
-Use the existing APIs.
-
-DO NOT create duplicate APIs.
-
-DO NOT create fake member data.
-
-DO NOT create fake sponsor data.
-
-DO NOT change backend models.
-
----
-
-# FIGMA ASSETS
-
-Inspect the actual Figma file and determine whether its images/assets can be accessed.
-
-If the Figma integration/environment allows asset export:
-
-export/download the required assets.
-
-Place them under:
-
-public/images/members/
-
-public/images/sponsors/
-
-public/images/community/
-
-Use meaningful filenames.
-
-Examples:
-
-members-hero-poster.webp
-
-member-photo-01.webp
-
-member-photo-02.webp
-
-sponsors-hero-banner.webp
-
-sponsor-logo-brand-name.webp
-
-home-community-decoration.webp
-
-IMPORTANT:
-
-Use the ACTUAL assets from this Figma file.
-
-Do NOT use random Unsplash images.
-
-Do NOT use random Google images.
-
-Do NOT invent sponsor logos.
-
-Do NOT invent member photographs.
-
----
-
-# IF FIGMA ASSETS ARE STILL NOT ACCESSIBLE
-
-Do NOT stop the whole task.
-
-Do NOT use random images.
+If Maven Wrapper does not exist and Maven is unavailable, do NOT modify the project just to install Maven.
 
 Instead:
 
-1. Recreate the layout accurately from the accessible Figma information.
-2. Keep the existing fallback behavior.
-3. Tell me exactly which assets need to be manually exported.
-
-For every missing asset report:
-
-filename
-
-Figma frame
-
-recommended folder
-
-where it is used
-
----
-
-# MEMBERS PAGE
-
-Review:
-
-/members
-
-Compare it against the actual Figma Members design.
-
-Update ONLY what is necessary.
-
-Match:
-
-Hero
-
-Poster
-
-Member cards
-
-Images
-
-Typography
-
-Colors
-
-Spacing
-
-Decorations
-
-CTA
-
-Responsive behavior
-
-Use existing backend member data.
-
-If a member has:
-
-imageUrl
-
-or
-
-photoUrl
-
-use it.
-
-If no backend image exists and there is a matching Figma image:
-
-use the Figma image as the frontend fallback.
-
-Do not replace real backend data.
-
----
-
-# SPONSORS PAGE
-
-Review:
-
-/sponsors
-
-Compare it against the actual Figma Sponsors design.
-
-Match:
-
-Hero
-
-Sponsor banner
-
-Sponsor logos
-
-Sponsor cards
-
-Sponsor tiers
-
-Typography
-
-Spacing
-
-Decorations
-
-CTA
-
-Responsive behavior
-
-Use the existing backend sponsor data.
-
-Existing tiers are:
-
-PLATINUM
-
-GOLD
-
-SILVER
-
-BRONZE
-
-Do NOT invent new tiers.
-
----
-
-# HOME PAGE
-
-Review the existing:
-
-Members
-
-Sponsors
-
-section on Home.
-
-If the Figma design contains a different community section:
-
-update the frontend to match it.
-
-Keep the compact Home experience.
-
-Keep:
-
-View All Members → /members
-
-View All Sponsors → /sponsors
-
----
-
-# NAVIGATION
-
-Keep:
-
-Home
-
-About
-
-Events
-
-Gallery
-
-Membership
-
-Members
-
-Sponsors
-
-Digital Marketing
-
-Login/Register
-
-Do not break the existing mobile navigation.
-
----
-
-# PAYMENT — DO NOT TOUCH
-
-The existing event payment system is correct.
-
-FREE EVENT:
-
-Registration → no payment.
-
-PAID EVENT:
-
-QR/UPI → external payment → screenshot upload → PENDING → Admin approve/reject.
-
-Do NOT add:
-
-Razorpay
-
-Stripe
-
-PayPal
-
-Checkout
-
-Membership payment
-
-Membership QR payment
-
-The Membership page remains NON-PAYMENT.
-
----
-
-# ADMIN — DO NOT TOUCH
-
-The existing Admin Panel already contains:
-
-Admin Dashboard
-
-Events
-
-Registrations
-
-Gallery
-
-Members
-
-Content
-
-Sponsors
-
-Users
-
-Keep all of it unchanged.
-
-Do not redesign the admin panel in this task.
-
-Do not modify admin APIs.
-
----
-
-# SUPABASE — DO NOT TOUCH
-
-Supabase is already the project's database/backend infrastructure.
-
-Do not change:
-
-database schema
-
-tables
-
-RLS
-
-authentication
-
-storage policies
-
-service role
-
-environment variables
-
----
-
-# SECURITY
-
-Do not expose:
-
-SUPABASE_SERVICE_ROLE_KEY
-
-JWT_SECRET
-
-DB_PASSWORD
-
-private credentials
-
-Only client-safe environment variables may exist in the frontend.
-
----
-
-# IMAGE QUALITY
-
-Use:
-
-WebP where appropriate
-
-optimized images
-
-responsive image sizing
-
-lazy loading for non-hero images
-
-proper alt text
-
-Do not stretch images.
-
-Do not distort logos.
-
-Do not crop important faces.
-
----
-
-# RESPONSIVE DESIGN
-
-Verify:
-
-Desktop
-
-Laptop
-
-Tablet
-
-Mobile
-
-Small mobile
-
-Check:
-
-hero
-
-posters
-
-member cards
-
-sponsor cards
-
-logos
-
-navigation
-
-CTA
-
-No horizontal scrolling.
-
----
-
-# CODE QUALITY
-
-Use reusable components.
-
-Do not duplicate large JSX blocks.
-
-Do not create unnecessary dependencies.
-
-Do not rewrite the entire CSS file.
-
-Reuse existing NLC design tokens.
-
----
-
-# PROTECTION CHECK
-
-Before modifications:
-
-git status
-
-Then make changes.
-
-After modifications:
-
-git status
-
-git diff --name-only
-
-git diff --stat
-
-Expected changes should primarily be:
-
-src/
-
-public/images/
-
-Do NOT modify:
-
-backend/
-
-pom.xml
-
-database
-
-Supabase configuration
-
-authentication
-
-payment backend
-
-admin backend
-
----
-
-# BUILD
-
-Run:
+- inspect pom.xml carefully
+- check Java version
+- verify dependency configuration
+- report that backend build could not be executed because Maven/Maven Wrapper is unavailable in the environment
+
+Then run the frontend build:
 
 npm run build
 
-The build MUST PASS.
+Run it from the correct frontend directory.
 
-Fix all frontend errors.
+Fix ONLY genuine build errors caused by the Cloudinary/gallery changes.
 
----
+Do not modify unrelated pages.
 
-# FINAL REPORT
+After that run:
 
-Give me a clear report:
+git status
+git diff --name-only
+git diff --stat
 
-## Figma
+FINAL REPORT:
 
-Correct Design URL inspected: YES/NO
+## Cloudinary
+- Cloudinary integration completed: YES/NO
+- Secure backend-only credentials: YES/NO
+- Public image upload implemented: YES/NO
 
-Figma visual content accessible: YES/NO
+## Admin Gallery
+- Select image: YES/NO
+- Local preview: YES/NO
+- Cloudinary upload: YES/NO
+- Uploaded image preview: YES/NO
+- Save Gallery item: YES/NO
+- Replace image: YES/NO
+- Delete handling: YES/NO
 
-Assets accessible: YES/NO
+## Gallery
+- Existing GalleryMedia system preserved: YES/NO
+- storagePublicId tracking implemented: YES/NO
+- Public Gallery verified: YES/NO
+- Home Gallery verified: YES/NO
+- Existing old URLs remain compatible: YES/NO
 
-## Members
-
-Existing page preserved: YES/NO
-
-Figma design applied: YES/NO
-
-Figma images integrated: YES/NO
-
-Existing Members API preserved: YES/NO
-
-## Sponsors
-
-Existing page preserved: YES/NO
-
-Figma design applied: YES/NO
-
-Figma logos integrated: YES/NO
-
-Existing Sponsors API preserved: YES/NO
-
-## Home
-
-Members section updated: YES/NO
-
-Sponsors section updated: YES/NO
-
-## Backend Safety
-
-Backend modified: YES/NO
-
-Supabase modified: YES/NO
-
-Database modified: YES/NO
-
-Authentication modified: YES/NO
-
-Payment modified: YES/NO
-
-Admin backend modified: YES/NO
+## Security
+- Cloudinary API secret exposed to frontend: YES/NO
+- Payment screenshot storage modified: YES/NO
+- Supabase private payment flow preserved: YES/NO
 
 ## Build
+- Backend Maven build: PASS / FAIL / NOT RUN
+- Reason if NOT RUN
+- Frontend npm run build: PASS / FAIL
 
-npm run build: PASS/FAIL
+## Git
+- List modified files
+- List created files
 
-## Manual Assets
-
-If any Figma assets could not be extracted, give me the exact list and where each file must be placed.
-
-IMPORTANT:
-
-Do not claim the Figma implementation is complete unless you actually inspected the correct Design file.
-
-Do not replace unavailable Figma assets with random images.
+Do not claim backend build PASS unless it was actually executed successfully.
+Do not redo completed work.
+Only complete verification and fix build errors caused by the current implementation.

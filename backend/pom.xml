@@ -24,6 +24,7 @@
         <springdoc.version>2.6.0</springdoc.version>
         <bucket4j.version>8.14.0</bucket4j.version>
         <zxing.version>3.5.3</zxing.version>
+        <cloudinary.version>2.5.0</cloudinary.version>
     </properties>
 
     <dependencies>
@@ -95,6 +96,13 @@
             <groupId>com.bucket4j</groupId>
             <artifactId>bucket4j_jdk17-core</artifactId>
             <version>${bucket4j.version}</version>
+        </dependency>
+
+        <!-- Cloudinary (server-side SDK). Used for public media (gallery, events, members, sponsors). -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http5</artifactId>
+            <version>${cloudinary.version}</version>
         </dependency>
 
         <!-- Local development only — in-memory database for the `local` profile -->
