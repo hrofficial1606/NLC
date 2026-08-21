@@ -17,6 +17,9 @@ import com.nlc.backend.dto.gallery.GalleryMediaRequest;
 import com.nlc.backend.dto.gallery.GalleryMediaResponse;
 import com.nlc.backend.dto.membercard.MemberCardRequest;
 import com.nlc.backend.dto.membercard.MemberCardResponse;
+import com.nlc.backend.dto.registration.MembershipRegistrationPaymentProofResponse;
+import com.nlc.backend.dto.registration.MembershipRegistrationResponse;
+import com.nlc.backend.dto.registration.MembershipRegistrationReviewRequest;
 import com.nlc.backend.dto.sponsor.SponsorRequest;
 import com.nlc.backend.dto.sponsor.SponsorResponse;
 import com.nlc.backend.dto.user.UserResponse;
@@ -30,6 +33,7 @@ import com.nlc.backend.service.DashboardService;
 import com.nlc.backend.service.EventService;
 import com.nlc.backend.service.GalleryService;
 import com.nlc.backend.service.MemberCardService;
+import com.nlc.backend.service.MembershipRegistrationService;
 import com.nlc.backend.service.SponsorService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -65,6 +69,7 @@ public class AdminController {
     private final SponsorService sponsorService;
     private final MemberCardService memberCardService;
     private final MemberCardRepository memberCardRepository;
+    private final MembershipRegistrationService membershipRegistrationService;
 
     @GetMapping("/dashboard")
     public ApiResponse<DashboardAnalyticsResponse> dashboard() {
@@ -261,6 +266,45 @@ public class AdminController {
     @GetMapping("/member-cards/user/{userId}")
     public ApiResponse<MemberCardResponse> memberCardByUser(@PathVariable Long userId) {
         return ApiResponse.success("Member card fetched", memberCardService.getCardByUserId(userId));
+    }
+
+    /**
+     * List all membership registration applications. The {@code status} query
+     * parameter is optional and filters by PENDING / APPROVED / REJECTED.
+     */
+    @GetMapping("/membership-registrations")
+    public ApiResponse<List<MembershipRegistrationResponse>> listMembershipRegistrations(
+            @RequestParam(required = false) String status) {
+        return ApiResponse.success("Membership applications fetched",
+                membershipRegistrationService.listAdminRegistrations(status));
+    }
+
+    /**
+     * Generates a short-lived signed URL for the membership payment-proof
+     * object stored in the private Supabase bucket. ROLE_ADMIN only.
+     */
+    @GetMapping("/membership-registrations/{id}/payment-proof")
+    public ApiResponse<MembershipRegistrationPaymentProofResponse> membershipPaymentProof(@PathVariable Long id) {
+        return ApiResponse.success("Signed URL generated",
+                membershipRegistrationService.generateAdminPaymentProof(id));
+    }
+
+    @PatchMapping("/membership-registrations/{id}/approve")
+    public ApiResponse<MembershipRegistrationResponse> approveMembership(@PathVariable Long id,
+                                                                        @AuthenticationPrincipal UserPrincipal principal,
+                                                                        @RequestBody(required = false)
+                                                                        MembershipRegistrationReviewRequest request) {
+        return ApiResponse.success("Membership application approved",
+                membershipRegistrationService.approve(id, principal.getId(), request));
+    }
+
+    @PatchMapping("/membership-registrations/{id}/reject")
+    public ApiResponse<MembershipRegistrationResponse> rejectMembership(@PathVariable Long id,
+                                                                       @AuthenticationPrincipal UserPrincipal principal,
+                                                                       @Valid @RequestBody
+                                                                       MembershipRegistrationReviewRequest request) {
+        return ApiResponse.success("Membership application rejected",
+                membershipRegistrationService.reject(id, principal.getId(), request));
     }
 
     private UserResponse toUserResponse(User user) {

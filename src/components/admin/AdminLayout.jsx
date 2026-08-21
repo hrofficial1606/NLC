@@ -11,6 +11,7 @@ const links = [
   { to: "/admin/content", label: "About Content" },
   { to: "/admin/sponsors", label: "Sponsors" },
   { to: "/admin/users", label: "Users" },
+  { to: "/admin/membership-applications", label: "Membership Applications" },
 ];
 
 export default function AdminLayout() {

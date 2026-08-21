@@ -12,6 +12,7 @@ import com.nlc.backend.entity.Role;
 import com.nlc.backend.entity.User;
 import com.nlc.backend.entity.VerificationToken;
 import com.nlc.backend.entity.enums.AuthProvider;
+import com.nlc.backend.entity.enums.RegistrationStatus;
 import com.nlc.backend.entity.enums.RoleType;
 import com.nlc.backend.exception.BadRequestException;
 import com.nlc.backend.exception.ResourceNotFoundException;
@@ -96,6 +97,38 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         User user = userRepository.findByEmailIgnoreCase(request.email())
                 .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+
+        // Membership approval gate. Existing users default to APPROVED via the
+        // User entity field initializer + DB column default, so this is a no-op
+        // for accounts created before this feature. New users created via the
+        // membership-registration flow are PENDING until an admin approves.
+        // Admins (ROLE_ADMIN) are exempt and can always sign in to review.
+        RegistrationStatus status = user.getRegistrationStatus() == null
+                ? RegistrationStatus.APPROVED
+                : user.getRegistrationStatus();
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(r -> r.getName() == RoleType.ADMIN);
+        if (!isAdmin) {
+            if (status == RegistrationStatus.PENDING) {
+                throw new UnauthorizedException(
+                        "Your membership application is under verification. "
+                                + "You will be able to sign in once it is approved.");
+            }
+            if (status == RegistrationStatus.REJECTED) {
+                throw new UnauthorizedException(
+                        "Your membership application was not approved. "
+                                + "Please contact the club for assistance.");
+            }
+            // CANCELLED is not produced by the current membership flow, but block
+            // it defensively so a stray value can never grant approved-member
+            // access.
+            if (status == RegistrationStatus.CANCELLED) {
+                throw new UnauthorizedException(
+                        "Your membership application is not active. "
+                                + "Please contact the club for assistance.");
+            }
+        }
+
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
         return issueTokens(user);

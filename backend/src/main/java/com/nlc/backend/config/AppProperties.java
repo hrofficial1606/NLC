@@ -19,6 +19,7 @@ public class AppProperties {
     private final Integrations integrations = new Integrations();
     private final Frontend frontend = new Frontend();
     private final Notifications notifications = new Notifications();
+    private final Membership membership = new Membership();
 
     @Getter
     @Setter
@@ -85,5 +86,23 @@ public class AppProperties {
     @Setter
     public static class Notifications {
         private boolean bookingEmailEnabled;
+    }
+
+    /**
+     * Membership registration payment configuration. Reuses the same payment
+     * model as paid events: a static QR/UPI pair + a fixed membership fee.
+     * No payment gateway integration — applicants pay externally and upload a
+     * private screenshot for admin review.
+     */
+    @Getter
+    @Setter
+    public static class Membership {
+        @NotBlank
+        private String fee;
+        @NotBlank
+        private String upiId;
+        private String qrImageUrl;
+        private String paymentInstructions;
+        private boolean enabled = true;
     }
 }

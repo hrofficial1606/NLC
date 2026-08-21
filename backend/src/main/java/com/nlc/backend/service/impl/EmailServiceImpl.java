@@ -39,6 +39,37 @@ public class EmailServiceImpl implements EmailService {
         log.info("Contact inquiry received: {} - {}", subject, body);
     }
 
+    @Override
+    @Async("applicationTaskExecutor")
+    public void sendRegistrationReceivedEmail(String email, String fullName) {
+        send(email, "Membership application received",
+                "Hi " + (fullName == null ? "" : fullName) + ",\n\n" +
+                        "Thank you for applying to join Nagpur Ladies Club. " +
+                        "Your membership application and payment proof have been received and are under review.\n\n" +
+                        "You will receive another email once an administrator has reviewed your application.\n\n" +
+                        "— Nagpur Ladies Club");
+    }
+
+    @Override
+    @Async("applicationTaskExecutor")
+    public void sendMembershipApprovedEmail(String email, String fullName) {
+        send(email, "Welcome to Nagpur Ladies Club",
+                "Hi " + (fullName == null ? "" : fullName) + ",\n\n" +
+                        "Your membership application has been approved. Welcome to the club!\n\n" +
+                        "— Nagpur Ladies Club");
+    }
+
+    @Override
+    @Async("applicationTaskExecutor")
+    public void sendMembershipRejectedEmail(String email, String fullName, String rejectionReason) {
+        send(email, "Membership application update",
+                "Hi " + (fullName == null ? "" : fullName) + ",\n\n" +
+                        "Thank you for applying. Unfortunately your membership application was not approved.\n\n" +
+                        "Reason: " + (rejectionReason == null ? "Not provided" : rejectionReason) + "\n\n" +
+                        "If you believe this was a mistake, please contact the club.\n\n" +
+                        "— Nagpur Ladies Club");
+    }
+
     private void send(String to, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

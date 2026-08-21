@@ -111,6 +111,12 @@ app:
     base-url: ${FRONTEND_BASE_URL:http://localhost:5173}
   notifications:
     booking-email-enabled: ${BOOKING_EMAIL_ENABLED:true}
+  membership:
+    fee: ${MEMBERSHIP_FEE:500}
+    upi-id: ${MEMBERSHIP_UPI_ID:nlcpayment@upi}
+    qr-image-url: ${MEMBERSHIP_QR_IMAGE_URL:}
+    payment-instructions: ${MEMBERSHIP_PAYMENT_INSTRUCTIONS:Pay the membership fee using the QR code or UPI ID, then upload a screenshot of the successful payment below. Your application will be reviewed by an admin and you will be notified once approved.}
+    enabled: ${MEMBERSHIP_REGISTRATION_ENABLED:true}
 logging:
   level:
     com.nlc.backend: INFO

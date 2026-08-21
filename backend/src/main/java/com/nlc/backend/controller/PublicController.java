@@ -1,5 +1,6 @@
 package com.nlc.backend.controller;
 
+import com.nlc.backend.config.AppProperties;
 import com.nlc.backend.dto.cms.AboutContentResponse;
 import com.nlc.backend.dto.cms.TeamMemberResponse;
 import com.nlc.backend.dto.common.ApiResponse;
@@ -8,12 +9,15 @@ import com.nlc.backend.dto.contact.ContactInquiryRequest;
 import com.nlc.backend.dto.contact.ContactInquiryResponse;
 import com.nlc.backend.dto.event.EventResponse;
 import com.nlc.backend.dto.gallery.GalleryMediaResponse;
+import com.nlc.backend.dto.membership.MembershipPaymentConfigResponse;
 import com.nlc.backend.dto.sponsor.SponsorResponse;
 import com.nlc.backend.service.CmsService;
 import com.nlc.backend.service.ContactService;
 import com.nlc.backend.service.EventService;
 import com.nlc.backend.service.GalleryService;
 import com.nlc.backend.service.SponsorService;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,7 @@ public class PublicController {
     private final CmsService cmsService;
     private final ContactService contactService;
     private final SponsorService sponsorService;
+    private final AppProperties appProperties;
 
     @GetMapping("/events")
     public ApiResponse<PageResponse<EventResponse>> events(
@@ -79,5 +84,35 @@ public class PublicController {
     @PostMapping("/contact")
     public ApiResponse<ContactInquiryResponse> contact(@Valid @RequestBody ContactInquiryRequest request) {
         return ApiResponse.success("Inquiry submitted successfully", contactService.create(request));
+    }
+
+    /**
+     * Public membership payment configuration (fee, QR, UPI ID, instructions).
+     * No secrets are ever exposed — only the values needed for the public
+     * payment step on the membership registration page.
+     */
+    @GetMapping("/membership/config")
+    public ApiResponse<MembershipPaymentConfigResponse> membershipConfig() {
+        AppProperties.Membership m = appProperties.getMembership();
+        BigDecimal feeAmount = parseFee(m.getFee());
+        return ApiResponse.success("Membership config fetched",
+                new MembershipPaymentConfigResponse(
+                        m.getFee(),
+                        feeAmount,
+                        m.getUpiId(),
+                        m.getQrImageUrl(),
+                        m.getPaymentInstructions(),
+                        m.isEnabled()));
+    }
+
+    private BigDecimal parseFee(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return BigDecimal.ZERO;
+        }
+        try {
+            return new BigDecimal(new BigInteger(raw.replaceAll("[^0-9]", "")));
+        } catch (NumberFormatException ex) {
+            return BigDecimal.ZERO;
+        }
     }
 }

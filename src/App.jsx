@@ -10,6 +10,8 @@ import EventListPage from "./components/events/EventListPage";
 import EventDetailsPage from "./components/events/EventDetailsPage";
 import PublicGalleryPage from "./components/public/PublicGalleryPage";
 import MembershipPage from "./components/public/MembershipPage";
+import MembershipApplyPage from "./components/public/MembershipApplyPage";
+import MembershipStatusPage from "./components/user/MembershipStatusPage";
 import NotFoundPage from "./components/public/NotFoundPage";
 import MembersPage from "./components/public/MembersPage";
 import SponsorsPage from "./components/public/SponsorsPage";
@@ -26,6 +28,7 @@ import AdminMembersPage from "./components/admin/AdminMembersPage";
 import AdminContentPage from "./components/admin/AdminContentPage";
 import AdminSponsorsPage from "./components/admin/AdminSponsorsPage";
 import AdminUsersPage from "./components/admin/AdminUsersPage";
+import AdminMembershipApplicationsPage from "./components/admin/AdminMembershipApplicationsPage";
 
 export default function App() {
   return (
@@ -39,6 +42,15 @@ export default function App() {
           <Route path="/events/:id" element={<EventDetailsPage />} />
           <Route path="/gallery" element={<PublicGalleryPage />} />
           <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/membership/apply" element={<MembershipApplyPage />} />
+          <Route
+            path="/membership/status"
+            element={
+              <ProtectedRoute>
+                <MembershipStatusPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/members" element={<MembersPage />} />
           <Route path="/sponsors" element={<SponsorsPage />} />
           <Route
@@ -72,6 +84,7 @@ export default function App() {
           <Route path="content" element={<AdminContentPage />} />
           <Route path="sponsors" element={<AdminSponsorsPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="membership-applications" element={<AdminMembershipApplicationsPage />} />
         </Route>
 
         {/* 404 */}

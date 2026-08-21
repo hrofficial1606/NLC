@@ -7,3 +7,4 @@ export * as memberApi from "./memberApi";
 export * as contentApi from "./contentApi";
 export * as adminApi from "./adminApi";
 export * as contactApi from "./contactApi";
+export * as membershipApi from "./membershipApi";

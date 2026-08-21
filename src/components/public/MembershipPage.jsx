@@ -83,7 +83,7 @@ export default function MembershipPage() {
               celebrate life together. Find the membership that feels right for you.
             </p>
             <div className="membership-hero__cta">
-              <Link to="/register" className="btn btn-primary btn-script">Apply now</Link>
+              <Link to="/membership/apply" className="btn btn-primary btn-script">Apply now</Link>
               <Link to="/events" className="btn btn-ghost btn-script">See events</Link>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function MembershipPage() {
                   </ul>
                 </div>
                 <div>
-                  <Link to="/register" className="btn btn-ghost btn-script plan-card__cta">
+                  <Link to="/membership/apply" className="btn btn-ghost btn-script plan-card__cta">
                     {plan.cta}
                   </Link>
                 </div>
@@ -165,7 +165,7 @@ export default function MembershipPage() {
               Become part of Nagpur&apos;s most inspiring women&apos;s community. The application is
               simple — and we can&apos;t wait to welcome you.
             </p>
-            <Link to="/register" className="btn btn-primary btn-script">Apply for membership</Link>
+            <Link to="/membership/apply" className="btn btn-primary btn-script">Apply for membership</Link>
           </div>
         </div>
       </section>
