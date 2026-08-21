@@ -24,7 +24,7 @@
         <springdoc.version>2.6.0</springdoc.version>
         <bucket4j.version>8.14.0</bucket4j.version>
         <zxing.version>3.5.3</zxing.version>
-        <cloudinary.version>2.5.0</cloudinary.version>
+        <cloudinary.version>2.4.0</cloudinary.version>
     </properties>
 
     <dependencies>

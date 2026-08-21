@@ -1,271 +1,67 @@
-CONTINUE FROM THE EXACT CURRENT STATE OF THIS NLC PROJECT.
+The backend Maven build failed. Fix ONLY this build/dependency problem.
 
-The previous Claude session stopped while completing the final task.
+DO NOT redesign the project.
+DO NOT remove or rewrite the membership registration feature.
+DO NOT remove Cloudinary functionality.
+DO NOT change the payment screenshot flow.
+DO NOT change Supabase private storage.
+DO NOT modify unrelated frontend/backend features.
 
-DO NOT restart the project.
-DO NOT redo the membership registration implementation.
-DO NOT rewrite completed frontend or backend code.
-DO NOT revert existing changes.
-DO NOT redo Cloudinary/Gallery work.
+Current Maven error:
 
-FIRST READ:
+Could not resolve dependency:
 
-1. instruction.txt or instraction.txt if that is the actual filename
-2. git status
-3. git diff --name-only
-4. git diff --stat
+com.cloudinary:cloudinary-http5:jar:2.5.0
 
-Then inspect the CURRENT repository state.
+Maven Central cannot find:
 
-==================================================
-PREVIOUS SESSION STATUS
-==================================================
+cloudinary-http5-2.5.0
 
-The previous audit session had 5 tasks:
+The current pom.xml incorrectly contains:
 
-COMPLETED:
+<dependency>
+    <groupId>com.cloudinary</groupId>
+    <artifactId>cloudinary-http5</artifactId>
+    <version>2.5.0</version>
+</dependency>
 
-✓ Audit API contracts end-to-end
+Replace the invalid version with a valid Maven Central version compatible with the existing Cloudinary Java integration.
 
-✓ Audit security and DB compatibility
+Use:
 
-✓ Verify registration reachability
+com.cloudinary:cloudinary-http5:2.4.0
 
-✓ Run regression builds
+Then:
 
-The only remaining task was:
+1. Inspect the existing Cloudinary-related Java imports and code.
+2. Ensure the dependency version is compatible with the existing code.
+3. Do not change working Cloudinary functionality unless required for compatibility.
+4. Run:
 
-■ Produce final audit report
+cd backend
+mvn clean package -DskipTests
 
-The session stopped before completing that final report.
+5. If another compilation or dependency error appears, fix ONLY the actual error.
+6. Repeat the Maven build until it passes.
 
-==================================================
-YOUR TASK
-==================================================
-
-Continue from the current repository state.
-
-Do not reimplement completed features.
-
-First verify that the previous audit findings and current code are still consistent.
-
-If you find an actual incomplete, broken, insecure, or mismatched implementation, fix ONLY that specific issue.
-
-Otherwise, do not make unnecessary changes.
-
-The required complete flow is:
-
-USER REGISTRATION
-        ↓
-PERSONAL DETAILS
-        ↓
-QR / UPI PAYMENT
-        ↓
-UPLOAD PAYMENT SCREENSHOT
-        ↓
-PRIVATE SUPABASE STORAGE
-        ↓
-PENDING
-        ↓
-ADMIN MEMBERSHIP APPLICATIONS
-        ↓
-SECURE PAYMENT PROOF VIEW
-        ↓
-APPROVE / REJECT
-        ↓
-USER STATUS UPDATED
-
-==================================================
-FINAL VERIFICATION
-==================================================
-
-Confirm the actual code supports all of these:
-
-REGISTRATION
-
-- Registration page is reachable
-- Personal details validation works
-- QR/UPI payment information is displayed
-- Payment screenshot is required
-- Allowed image validation exists
-- Local image preview exists
-- Duplicate submission is prevented
-- New registration starts as PENDING
-
-PAYMENT SECURITY
-
-- Payment screenshots use private Supabase storage
-- Payment screenshots are NOT uploaded to Cloudinary
-- No permanent public payment proof URL is exposed
-- Authorized signed URLs are generated only when required
-
-ADMIN
-
-- Membership Applications page is reachable
-- Admin can list applications
-- Status filtering works
-- Admin can securely view payment proof
-- Admin can approve
-- Admin can reject
-- Rejection reason is supported if implemented
-- Duplicate approve/reject requests are prevented
-
-USER ACCESS
-
-- Users can view only their own registration status
-- PENDING users do not get approved-member access
-- APPROVED users get normal access
-- REJECTED users are handled correctly
-- Existing users remain approved
-- Admin users can still log in
-
-REGRESSION
-
-Confirm these were not broken:
-
-- Existing login
-- Admin login
-- Existing users
-- Paid event payment flow
-- Private event payment screenshots
-- Event approval/rejection
-- Free event registration
-- Cloudinary Gallery
-- Admin Gallery upload
-- Public Gallery
-- Home Gallery
-
-==================================================
-BUILD STATUS
-==================================================
-
-Check the existing build results or rerun if necessary.
-
-Run:
+Also run:
 
 npm run build
 
-For backend, check:
+after the backend build succeeds, but do not modify frontend code unless the build actually fails.
 
-mvn -v
+Finally provide:
 
-and check for:
+- Exact dependency version used
+- Backend build result: PASS/FAIL
+- Frontend build result: PASS/FAIL
+- Files modified
+- Any remaining issue
 
-mvnw
-mvnw.cmd
-.mvn
+Success criteria:
 
-If Maven is available, run the backend build.
+mvn clean package -DskipTests
 
-If Maven and Maven Wrapper are unavailable:
+must end with:
 
-DO NOT install Maven.
-
-Report backend build as:
-
-NOT RUN
-
-with the exact reason.
-
-==================================================
-GIT
-==================================================
-
-Before the final report run:
-
-git status
-git diff --name-only
-git diff --stat
-
-Do not discard any existing work.
-
-==================================================
-FINAL REPORT
-==================================================
-
-Produce a clear factual report using this exact structure:
-
-# FINAL MEMBERSHIP REGISTRATION AUDIT
-
-## 1. COMPLETION STATUS
-
-- Overall feature: COMPLETE / INCOMPLETE
-- Remaining issues: list them or NONE
-
-## 2. REGISTRATION FLOW
-
-- Registration page reachable: YES/NO
-- Personal details step: YES/NO
-- QR/UPI payment: YES/NO
-- Payment screenshot required: YES/NO
-- Screenshot preview: YES/NO
-- Private Supabase storage: YES/NO
-- New registration starts PENDING: YES/NO
-
-## 3. ADMIN
-
-- Membership Applications page: YES/NO
-- Applications list: YES/NO
-- Status filtering: YES/NO
-- Secure payment proof view: YES/NO
-- Approve: YES/NO
-- Reject: YES/NO
-- Rejection reason: YES/NO
-
-## 4. USER STATUS
-
-- Pending status: YES/NO
-- Approved status: YES/NO
-- Rejected status: YES/NO
-- Pending users restricted: YES/NO
-- Existing users preserved as approved: YES/NO
-
-## 5. SECURITY
-
-- Payment screenshots private: YES/NO
-- Cloudinary not used for payment proofs: YES/NO
-- Only admin can approve/reject: YES/NO
-- Users cannot view other applications: YES/NO
-- Signed payment proof access secure: YES/NO
-
-## 6. REGRESSION
-
-- Existing login preserved: YES/NO
-- Admin login preserved: YES/NO
-- Event payment flow preserved: YES/NO
-- Event payment screenshot security preserved: YES/NO
-- Cloudinary Gallery preserved: YES/NO
-- Public/Home Gallery preserved: YES/NO
-
-## 7. BUILD
-
-- Frontend build: PASS / FAIL
-- Backend build: PASS / FAIL / NOT RUN
-- Exact backend reason if NOT RUN
-
-## 8. FILES
-
-List:
-
-- All modified files
-- All created files
-
-## 9. MANUAL CONFIGURATION
-
-List anything still required before running or deploying the application.
-
-If nothing is required, say:
-
-NONE
-
-IMPORTANT:
-
-Do not claim COMPLETE unless the actual code supports:
-
-REGISTER
-→ PAY BY QR/UPI
-→ UPLOAD SCREENSHOT
-→ PRIVATE STORAGE
-→ PENDING
-→ ADMIN REVIEW
-→ APPROVED / REJECTED
+BUILD SUCCESS
