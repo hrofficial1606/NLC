@@ -13,6 +13,7 @@ import com.nlc.backend.service.MediaStorageService;
 import com.nlc.backend.util.PageMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,14 @@ public class GalleryServiceImpl implements GalleryService {
     /**
      * Optional — only present when the active public-storage provider is
      * Supabase OR Cloudinary. Used to safely delete the underlying asset
-     * when the gallery row is removed. Injected lazily via a setter pattern
-     * is unnecessary because Spring autowires by type and MediaStorageService
-     * has a single active bean at any time.
+     * when the gallery row is removed. Injected via {@link ObjectProvider}
+     * so the gallery service can boot even when no media-storage bean is
+     * registered (e.g. {@code app.storage.provider=LOCAL} for local
+     * development, or CLOUDINARY selected without credentials). In those
+     * configurations we simply skip the best-effort asset delete and rely on
+     * the DB row as the source of truth.
      */
-    private final MediaStorageService mediaStorageService;
+    private final ObjectProvider<MediaStorageService> mediaStorageServiceProvider;
 
     @Override
     public GalleryMediaResponse create(GalleryMediaRequest request) {
@@ -83,6 +87,7 @@ public class GalleryServiceImpl implements GalleryService {
             // Manual/external URL — no ownership of an underlying asset.
             return;
         }
+        MediaStorageService mediaStorageService = mediaStorageServiceProvider.getIfAvailable();
         if (mediaStorageService == null) {
             log.debug("MediaStorageService bean not present; skipping asset delete for media {}", media.getId());
             return;

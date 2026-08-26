@@ -153,7 +153,15 @@ export default function AdminGalleryPage() {
       // Response: { publicId, secureUrl, resourceType }
       setUploaded(res);
     } catch (err) {
-      setUploadError(err.message || "Upload failed. Please try again.");
+      // Defensive: ensure no raw HTML/502 ever reaches the admin UI.
+      const fallback = "Image upload failed. Please try again or contact the administrator.";
+      let msg = err?.message || fallback;
+      if (/<html|<!doctype/i.test(msg)) msg = fallback;
+      setUploadError(msg);
+      // Log the technical response for debugging without showing it.
+      if (typeof console !== "undefined" && console.error) {
+        console.error("Gallery upload failed", err);
+      }
     } finally {
       setUploading(false);
     }

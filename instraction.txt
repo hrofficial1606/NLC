@@ -1,67 +1,70 @@
-The backend Maven build failed. Fix ONLY this build/dependency problem.
+Continue from the current project state. Do not restart or redesign anything unnecessarily.
 
-DO NOT redesign the project.
-DO NOT remove or rewrite the membership registration feature.
-DO NOT remove Cloudinary functionality.
-DO NOT change the payment screenshot flow.
-DO NOT change Supabase private storage.
-DO NOT modify unrelated frontend/backend features.
+We have successfully verified that the Spring Boot backend is reachable on port 8081 and public GET APIs such as:
 
-Current Maven error:
+/api/public/events
+/api/public/gallery
+/api/public/about/team
+/api/public/sponsors
 
-Could not resolve dependency:
+are returning HTTP 200.
 
-com.cloudinary:cloudinary-http5:jar:2.5.0
+However, there is still a production issue:
 
-Maven Central cannot find:
+1. In Admin → Add Member, image upload is failing.
+2. In Admin → Gallery → Add Image, image upload is failing.
+3. The frontend displays the full HTML error:
+   502 Bad Gateway
+   nginx/1.24.0 (Ubuntu)
 
-cloudinary-http5-2.5.0
+The browser screenshots confirm that the failure happens when uploading images. Please investigate and FIX the actual cause.
 
-The current pom.xml incorrectly contains:
+Important production details:
+- Project path: /var/www/nagpur-ladies-club/NLC
+- Backend: Spring Boot JAR
+- Backend systemd service: nlc.service
+- Backend port: 8081
+- Nginx proxies /api/ to http://127.0.0.1:8081/api/
+- Cloudinary environment variables are configured in the nlc.service environment
+- The application.yml supports APP_STORAGE_PROVIDER, SUPABASE, and CLOUDINARY
+- Public GET APIs work, so do not change the working Nginx routing unless the upload endpoint specifically requires a fix.
 
-<dependency>
-    <groupId>com.cloudinary</groupId>
-    <artifactId>cloudinary-http5</artifactId>
-    <version>2.5.0</version>
-</dependency>
+Please perform these steps carefully:
 
-Replace the invalid version with a valid Maven Central version compatible with the existing Cloudinary Java integration.
+1. Inspect the frontend API calls for member image upload and gallery image upload and identify the exact endpoint, HTTP method, request format, and field names.
 
-Use:
+2. Inspect the backend controllers/services handling multipart file uploads.
 
-com.cloudinary:cloudinary-http5:2.4.0
+3. Check live backend logs while reproducing an upload:
+   sudo journalctl -u nlc -f
 
-Then:
+4. Check Nginx error logs while reproducing an upload:
+   sudo tail -f /var/log/nginx/error.log
 
-1. Inspect the existing Cloudinary-related Java imports and code.
-2. Ensure the dependency version is compatible with the existing code.
-3. Do not change working Cloudinary functionality unless required for compatibility.
-4. Run:
+5. Verify whether the backend crashes, rejects multipart requests, times out, or throws a Cloudinary/storage exception.
 
-cd backend
-mvn clean package -DskipTests
+6. Verify the active storage provider and Cloudinary configuration without printing secrets in the report.
 
-5. If another compilation or dependency error appears, fix ONLY the actual error.
-6. Repeat the Maven build until it passes.
+7. Check Spring multipart configuration, maximum upload size, request size, and Nginx client_max_body_size. Fix these only if they are causing the issue.
 
-Also run:
+8. Test the exact upload API directly from the server using curl and a real image file, if possible.
 
-npm run build
+9. Make the minimum necessary code/configuration changes to fix both Member and Gallery uploads.
 
-after the backend build succeeds, but do not modify frontend code unless the build actually fails.
+10. Rebuild the backend and deploy/restart it safely:
+    mvn clean package -DskipTests
+    sudo systemctl restart nlc
 
-Finally provide:
+11. Verify:
+    - backend is listening on port 8081
+    - existing public APIs still work
+    - Gallery image upload works
+    - Member image upload works
+    - uploaded image URL is returned correctly
+    - browser no longer receives 502
 
-- Exact dependency version used
-- Backend build result: PASS/FAIL
-- Frontend build result: PASS/FAIL
-- Files modified
-- Any remaining issue
+Do not just give suggestions. Inspect the actual code, logs, and configuration and fix the root cause.
 
-Success criteria:
+Before making changes, briefly report what you found. After the fix, give me the exact files changed, commands run, and final verification results.
 
-mvn clean package -DskipTests
-
-must end with:
-
-BUILD SUCCESS
+IMPORTANT SECURITY: Never print Cloudinary, Supabase, database, JWT, or any other secret values in terminal output or the final report.

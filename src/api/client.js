@@ -89,17 +89,42 @@ export async function apiFetch(path, { method = "GET", body, headers = {}, isFor
   }
 
   let payload = null;
+  const contentType = res.headers.get("content-type") || "";
   const text = await res.text();
   if (text) {
-    try {
-      payload = JSON.parse(text);
-    } catch {
-      payload = { success: false, message: text };
+    // Only attempt to parse JSON when the server actually returned JSON.
+    // An HTML/502 page from an upstream proxy would otherwise leak into the
+    // user-facing error message (e.g. "Image upload failed. <html>...").
+    if (contentType.includes("application/json")) {
+      try {
+        payload = JSON.parse(text);
+      } catch {
+        payload = { success: false, message: "Invalid JSON response from server." };
+      }
+    } else {
+      // Non-JSON response (HTML 502/504 from nginx, plain text from a proxy,
+      // etc.) — keep it as a diagnostic in the payload but never as the
+      // user-visible message.
+      const isHtml = /<\s*(!doctype|html|head|body)/i.test(text);
+      const preview = isHtml
+        ? "[Non-JSON response: " + (res.statusText || res.status) + "]"
+        : text.slice(0, 200);
+      if (typeof console !== "undefined" && console.error) {
+        console.error("apiFetch non-JSON response", { url, status: res.status, preview: text.slice(0, 500) });
+      }
+      payload = { success: false, message: preview };
     }
   }
 
   if (!res.ok) {
-    const message = (payload && payload.message) || `Request failed (${res.status})`;
+    // Build a clean, user-facing message. For network/proxy failures (502/503/504)
+    // we avoid leaking raw HTML and surface a friendly fallback instead.
+    let message = (payload && payload.message) || `Request failed (${res.status})`;
+    if (res.status === 502 || res.status === 503 || res.status === 504) {
+      message = "The service is temporarily unavailable. Please try again or contact the administrator.";
+    } else if (/<html|<!doctype/i.test(message)) {
+      message = `Request failed (${res.status}). Please try again.`;
+    }
     const error = new Error(message);
     error.status = res.status;
     error.payload = payload;

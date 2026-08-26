@@ -1,12 +1,17 @@
 package com.nlc.backend.controller;
 
+import com.nlc.backend.config.StorageProperties;
+import com.nlc.backend.config.StorageProvider;
 import com.nlc.backend.dto.common.ApiResponse;
 import com.nlc.backend.dto.upload.MediaUploadResponse;
 import com.nlc.backend.exception.BadRequestException;
 import com.nlc.backend.service.MediaStorageService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,23 +41,46 @@ public class UploadController {
             "gallery", "events", "members", "sponsors", "nlc"
     );
 
-    private final MediaStorageService mediaStorageService;
+    /**
+     * {@link MediaStorageService} is provided by CloudinaryStorageService when
+     * APP_STORAGE_PROVIDER=CLOUDINARY, or by StorageServiceAdapter when SUPABASE.
+     * Using ObjectProvider means the controller can boot even when the
+     * configured provider is CLOUDINARY but credentials are missing — instead
+     * we surface a clear 503 JSON error at request time.
+     */
+    private final ObjectProvider<MediaStorageService> mediaStorageServiceProvider;
+    private final StorageProperties storageProperties;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<MediaUploadResponse> upload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<ApiResponse<MediaUploadResponse>> upload(@RequestParam("file") MultipartFile file,
                                                    @RequestParam(defaultValue = "nlc") String folder) {
         validateFile(file);
         String safeFolder = sanitizeFolder(folder);
-        return ApiResponse.success("Media uploaded", mediaStorageService.upload(file, safeFolder));
+        MediaStorageService mediaStorageService = mediaStorageServiceProvider.getIfAvailable();
+        if (mediaStorageService == null) {
+            // Cloudinary provider is selected but the Cloudinary bean could not
+            // be created (typically missing credentials) — or no provider is
+            // configured. Return a clear, actionable JSON error rather than a
+            // raw 500/502 that the upstream proxy would render as HTML.
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(ApiResponse.failure(cloudinaryConfigMessage(), null));
+        }
+        MediaUploadResponse result = mediaStorageService.upload(file, safeFolder);
+        return ResponseEntity.ok(ApiResponse.success("Media uploaded", result));
     }
 
     @DeleteMapping("/{publicId}")
-    public ApiResponse<Void> delete(@PathVariable String publicId) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable String publicId) {
         if (publicId == null || publicId.isBlank() || publicId.contains("..")) {
             throw new BadRequestException("Invalid publicId");
         }
+        MediaStorageService mediaStorageService = mediaStorageServiceProvider.getIfAvailable();
+        if (mediaStorageService == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(ApiResponse.failure(cloudinaryConfigMessage(), null));
+        }
         mediaStorageService.delete(publicId);
-        return ApiResponse.success("Media deleted", null);
+        return ResponseEntity.ok(ApiResponse.success("Media deleted", null));
     }
 
     private void validateFile(MultipartFile file) {
@@ -90,5 +118,15 @@ public class UploadController {
             throw new BadRequestException("Unsupported folder: " + folder);
         }
         return trimmed;
+    }
+
+    private String cloudinaryConfigMessage() {
+        StorageProvider provider = storageProperties.getProvider();
+        if (provider == StorageProvider.CLOUDINARY) {
+            return "Image upload is currently unavailable: Cloudinary storage is selected "
+                    + "but credentials are missing. Set CLOUDINARY_CLOUD_NAME, "
+                    + "CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET on the backend.";
+        }
+        return "Image upload is currently unavailable. Please contact the administrator.";
     }
 }

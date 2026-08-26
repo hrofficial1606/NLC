@@ -1,4 +1,5 @@
 import { apiFetch } from "./client";
+import { uploadMedia as uploadMediaShared } from "./uploadApi";
 
 export function listPublicGallery({ page = 0, size = 12 } = {}) {
   return apiFetch(`/public/gallery?page=${page}&size=${size}`, { auth: false });
@@ -25,18 +26,11 @@ export function deleteGalleryItem(id) {
  * configured, Supabase otherwise) and returns:
  *   { publicId, secureUrl, resourceType }
  *
- * The response shape is unified regardless of provider so the admin UI can
- * forward the values straight to createGalleryItem. Folder is one of:
- * "gallery", "events", "members", "sponsors".
+ * Re-exported from uploadApi so the gallery page and the new member upload UI
+ * share the same sanitized error path.
  */
-export async function uploadMedia(file, folder = "gallery") {
-  const form = new FormData();
-  form.append("file", file);
-  return apiFetch(`/admin/uploads?folder=${encodeURIComponent(folder)}`, {
-    method: "POST",
-    body: form,
-    isForm: true,
-  });
+export function uploadMedia(file, folder = "gallery") {
+  return uploadMediaShared(file, folder);
 }
 
 export function deleteMedia(publicId) {

@@ -12,15 +12,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Adapter that lets the legacy {@code /admin/uploads} controller (which talks
- * to {@link MediaStorageService}) still delegate to the SUPABASE-backed
- * {@link StorageService}. Active when the configured public-storage provider
- * is SUPABASE (or the property is missing). When CLOUDINARY is selected, the
- * {@link CloudinaryStorageService} bean provides the
- * {@link MediaStorageService} implementation directly.
+ * to {@link MediaStorageService}) still delegate to the SUPABASE-backed or
+ * LOCAL-backed {@link StorageService}. Active when the configured
+ * public-storage provider is SUPABASE or LOCAL (or the property is missing).
+ * When CLOUDINARY is selected, the {@link CloudinaryStorageService} bean
+ * provides the {@link MediaStorageService} implementation directly — and when
+ * CLOUDINARY is selected without credentials the bean is intentionally absent
+ * and the upload controller returns a clean 503 JSON.
  */
 @Service
 @ConditionalOnExpression(
-        "'${app.storage.provider:SUPABASE}'.equalsIgnoreCase('SUPABASE')")
+        "'${app.storage.provider:SUPABASE}'.equalsIgnoreCase('SUPABASE') "
+                + "or '${app.storage.provider:SUPABASE}'.equalsIgnoreCase('LOCAL')")
 @RequiredArgsConstructor
 public class StorageServiceAdapter implements MediaStorageService {
 

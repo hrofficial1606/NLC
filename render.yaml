@@ -43,6 +43,26 @@ services:
         value: "300"
       - key: APP_STORAGE_PROVIDER
         value: SUPABASE
+      # Cloudinary credentials (server-side only). Only required when
+      # APP_STORAGE_PROVIDER=CLOUDINARY. Leave blank for SUPABASE-only deploys.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_BASE_FOLDER
+        value: nlc
+      - key: CLOUDINARY_GALLERY_FOLDER
+        value: nlc/gallery
+      - key: CLOUDINARY_EVENTS_FOLDER
+        value: nlc/events
+      - key: CLOUDINARY_MEMBERS_FOLDER
+        value: nlc/members
+      - key: CLOUDINARY_SPONSORS_FOLDER
+        value: nlc/sponsors
+      - key: CLOUDINARY_MAX_BYTES
+        value: "10485760"
       - key: MAIL_HOST
         sync: false
       - key: MAIL_PORT

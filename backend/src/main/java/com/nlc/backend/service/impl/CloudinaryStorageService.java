@@ -13,8 +13,16 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +38,36 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @ConditionalOnProperty(prefix = "app.storage", name = "provider", havingValue = "CLOUDINARY")
+@ConditionalOnBean(Cloudinary.class)
 @RequiredArgsConstructor
 @Slf4j
-public class CloudinaryStorageService implements StorageService, MediaStorageService {
+public class CloudinaryStorageService implements StorageService, MediaStorageService, DisposableBean {
 
     private static final Set<String> ALLOWED_MIME = Set.of(
             "image/jpeg", "image/png", "image/webp"
     );
     private static final long DEFAULT_MAX_BYTES = 10L * 1024L * 1024L;
+    /**
+     * Cloudinary HTTP calls are synchronous and can hang for tens of seconds
+     * when the Cloudinary API is slow or unreachable. We bound each upload with
+     * a hard timeout so a stuck upload can never exceed nginx's
+     * {@code proxy_read_timeout} (default 60s) and surface as a 502 Bad
+     * Gateway to the admin browser. A bounded timeout also guarantees the
+     * request returns a clean JSON error instead of an open socket that
+     * Tomcat eventually resets.
+     */
+    private static final long UPLOAD_TIMEOUT_SECONDS = 25L;
+
+    /**
+     * Single-thread executor used to enforce the upload timeout. Sized to 1
+     * because uploads are user-driven (one at a time per admin) and the
+     * Cloudinary SDK is not thread-safe across uploads in the same process.
+     */
+    private final ExecutorService uploadExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "cloudinary-upload");
+        t.setDaemon(true);
+        return t;
+    });
 
     private final Cloudinary cloudinary;
     private final StorageProperties storageProperties;
@@ -51,25 +81,52 @@ public class CloudinaryStorageService implements StorageService, MediaStorageSer
         // Cloudinary public_id accepts '/' for folder structure; we use the
         // generated UUID as the public_id under the safe folder.
         String publicId = safeFolder + "/" + objectKey;
+        byte[] payload;
         try {
-            Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                    "public_id", publicId,
-                    "resource_type", "image",
-                    "overwrite", true,
-                    "unique_filename", false,
-                    "use_filename", false,
-                    "folder", safeFolder
-            ));
+            payload = file.getBytes();
+        } catch (IOException ex) {
+            Thread.currentThread().interrupt();
+            throw new BadRequestException("Could not read uploaded file: " + ex.getMessage());
+        }
+        Future<Map<?, ?>> future = uploadExecutor.submit((Callable<Map<?, ?>>) () ->
+                cloudinary.uploader().upload(payload, ObjectUtils.asMap(
+                        "public_id", publicId,
+                        "resource_type", "image",
+                        "overwrite", true,
+                        "unique_filename", false,
+                        "use_filename", false,
+                        "folder", safeFolder
+                )));
+        try {
+            Map<?, ?> result = future.get(UPLOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             String secureUrl = asString(result.get("secure_url"));
             String returnedPublicId = asString(result.get("public_id"));
             return new StorageUploadResult(returnedPublicId, secureUrl, null, false);
-        } catch (IOException ex) {
+        } catch (TimeoutException ex) {
+            // Cancel the stuck future so the executor thread can be reused.
+            future.cancel(true);
+            log.error("Cloudinary upload timed out after {}s for publicId={}", UPLOAD_TIMEOUT_SECONDS, publicId);
+            throw new IllegalStateException(
+                    "Cloudinary upload timed out after " + UPLOAD_TIMEOUT_SECONDS + "s. "
+                            + "Please retry or contact the administrator.", ex);
+        } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException("Cloudinary upload error", ex);
-        } catch (Exception ex) {
-            log.error("Cloudinary upload failed: {}", ex.getMessage());
-            throw new IllegalStateException("Cloudinary upload failed", ex);
+            throw new IllegalStateException("Cloudinary upload interrupted", ex);
+        } catch (java.util.concurrent.ExecutionException ex) {
+            // Unwrap the underlying Cloudinary SDK failure so the message
+            // reflects the real reason (bad credentials, network, etc.) and
+            // the GlobalExceptionHandler can surface a clean 503 JSON.
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            log.error("Cloudinary upload failed for publicId={}: {}", publicId, cause.getMessage());
+            throw new IllegalStateException("Cloudinary upload failed: " + cause.getMessage(), cause);
         }
+    }
+
+    @Override
+    public void destroy() {
+        // Gracefully shut down the single-thread upload executor on context
+        // shutdown so the JVM can exit cleanly during redeploys/restarts.
+        uploadExecutor.shutdownNow();
     }
 
     /**
