@@ -1,70 +1,27 @@
-Continue from the current project state. Do not restart or redesign anything unnecessarily.
+cd /var/www/nagpur-ladies-club/NLC
+git pull
 
-We have successfully verified that the Spring Boot backend is reachable on port 8081 and public GET APIs such as:
+echo "===== ENV CHECK ====="
+grep -E '^(PORT|SERVER_PORT|DB_URL|DB_USERNAME|APP_STORAGE_PROVIDER|SUPABASE_URL|SUPABASE_PUBLIC_BUCKET|SUPABASE_PRIVATE_BUCKET|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY)=' /opt/nlc/nlc.env
 
-/api/public/events
-/api/public/gallery
-/api/public/about/team
-/api/public/sponsors
+echo "===== SERVICE FILE ====="
+sudo systemctl cat nlc
 
-are returning HTTP 200.
+echo "===== BUILD ====="
+cd /var/www/nagpur-ladies-club/NLC/backend
+mvn clean package -DskipTests
 
-However, there is still a production issue:
+echo "===== RESTART ====="
+sudo systemctl daemon-reload
+sudo systemctl restart nlc
 
-1. In Admin → Add Member, image upload is failing.
-2. In Admin → Gallery → Add Image, image upload is failing.
-3. The frontend displays the full HTML error:
-   502 Bad Gateway
-   nginx/1.24.0 (Ubuntu)
+sleep 10
 
-The browser screenshots confirm that the failure happens when uploading images. Please investigate and FIX the actual cause.
+echo "===== SERVICE STATUS ====="
+sudo systemctl status nlc --no-pager -l
 
-Important production details:
-- Project path: /var/www/nagpur-ladies-club/NLC
-- Backend: Spring Boot JAR
-- Backend systemd service: nlc.service
-- Backend port: 8081
-- Nginx proxies /api/ to http://127.0.0.1:8081/api/
-- Cloudinary environment variables are configured in the nlc.service environment
-- The application.yml supports APP_STORAGE_PROVIDER, SUPABASE, and CLOUDINARY
-- Public GET APIs work, so do not change the working Nginx routing unless the upload endpoint specifically requires a fix.
+echo "===== PORT ====="
+sudo ss -ltnp | grep 8081 || true
 
-Please perform these steps carefully:
-
-1. Inspect the frontend API calls for member image upload and gallery image upload and identify the exact endpoint, HTTP method, request format, and field names.
-
-2. Inspect the backend controllers/services handling multipart file uploads.
-
-3. Check live backend logs while reproducing an upload:
-   sudo journalctl -u nlc -f
-
-4. Check Nginx error logs while reproducing an upload:
-   sudo tail -f /var/log/nginx/error.log
-
-5. Verify whether the backend crashes, rejects multipart requests, times out, or throws a Cloudinary/storage exception.
-
-6. Verify the active storage provider and Cloudinary configuration without printing secrets in the report.
-
-7. Check Spring multipart configuration, maximum upload size, request size, and Nginx client_max_body_size. Fix these only if they are causing the issue.
-
-8. Test the exact upload API directly from the server using curl and a real image file, if possible.
-
-9. Make the minimum necessary code/configuration changes to fix both Member and Gallery uploads.
-
-10. Rebuild the backend and deploy/restart it safely:
-    mvn clean package -DskipTests
-    sudo systemctl restart nlc
-
-11. Verify:
-    - backend is listening on port 8081
-    - existing public APIs still work
-    - Gallery image upload works
-    - Member image upload works
-    - uploaded image URL is returned correctly
-    - browser no longer receives 502
-
-Do not just give suggestions. Inspect the actual code, logs, and configuration and fix the root cause.
-
-Before making changes, briefly report what you found. After the fix, give me the exact files changed, commands run, and final verification results.
-
-IMPORTANT SECURITY: Never print Cloudinary, Supabase, database, JWT, or any other secret values in terminal output or the final report.
+echo "===== RECENT LOGS ====="
+sudo journalctl -u nlc -n 100 --no-pager -l

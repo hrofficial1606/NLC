@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY --from=build /app/target/event-management-backend-1.0.0.jar app.jar
 
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=8081
+EXPOSE 8081
 
 ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT}"]

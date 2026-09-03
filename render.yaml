@@ -42,7 +42,7 @@ services:
       - key: SUPABASE_SIGNED_URL_TTL
         value: "300"
       - key: APP_STORAGE_PROVIDER
-        value: SUPABASE
+        value: CLOUDINARY
       # Cloudinary credentials (server-side only). Only required when
       # APP_STORAGE_PROVIDER=CLOUDINARY. Leave blank for SUPABASE-only deploys.
       - key: CLOUDINARY_CLOUD_NAME
