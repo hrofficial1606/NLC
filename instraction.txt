@@ -1,27 +1,231 @@
-cd /var/www/nagpur-ladies-club/NLC
-git pull
+We are now at the FINAL RUNTIME VERIFICATION stage.
 
-echo "===== ENV CHECK ====="
-grep -E '^(PORT|SERVER_PORT|DB_URL|DB_USERNAME|APP_STORAGE_PROVIDER|SUPABASE_URL|SUPABASE_PUBLIC_BUCKET|SUPABASE_PRIVATE_BUCKET|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY)=' /opt/nlc/nlc.env
+Your previous audit is useful, but I noticed an important contradiction:
 
-echo "===== SERVICE FILE ====="
-sudo systemctl cat nlc
+You marked Cloudinary upload as PASS based on code inspection, while your own report says:
 
-echo "===== BUILD ====="
-cd /var/www/nagpur-ladies-club/NLC/backend
-mvn clean package -DskipTests
+"REQUIRES REAL CLOUDINARY TEST: Actual image upload/delete"
 
-echo "===== RESTART ====="
-sudo systemctl daemon-reload
-sudo systemctl restart nlc
+Therefore Cloudinary must NOT be considered PASS yet.
 
-sleep 10
+I want you to perform a strict final verification and do not mark anything PASS unless there is actual evidence.
 
-echo "===== SERVICE STATUS ====="
-sudo systemctl status nlc --no-pager -l
+==================================================
+CURRENT HOSTINGER FACTS
+==================================================
 
-echo "===== PORT ====="
-sudo ss -ltnp | grep 8081 || true
+My Hostinger server has already been manually verified.
 
-echo "===== RECENT LOGS ====="
-sudo journalctl -u nlc -n 100 --no-pager -l
+Production:
+
+https://nagpurladiesclub.com
+
+Backend:
+
+Spring Boot
+port 8081
+context path /api
+
+Verified manually:
+
+nlc.service = active/running
+PostgreSQL connection = successful
+Tomcat = port 8081
+localhost API = HTTP 200
+production HTTPS API = HTTP 200
+
+The running Java process has:
+
+CLOUDINARY_CLOUD_NAME = SET
+CLOUDINARY_API_KEY = SET
+CLOUDINARY_API_SECRET = SET
+
+APP_STORAGE_PROVIDER=CLOUDINARY
+
+Therefore DO NOT diagnose this as a missing environment variable problem.
+
+==================================================
+MAIN TASK
+==================================================
+
+Find out whether Cloudinary ACTUALLY WORKS through the NLC application.
+
+Do not only inspect source code.
+
+==================================================
+CLOUDINARY TEST
+==================================================
+
+First verify the exact upload endpoint:
+
+POST /api/admin/uploads
+
+Then determine what authentication it requires.
+
+If you have a way to run the application and perform an authenticated request, perform a REAL test upload using a temporary test image.
+
+The test must verify:
+
+1. Authentication succeeds.
+2. Multipart upload reaches Spring Boot.
+3. UploadController receives the file.
+4. StorageServiceAdapter selects CLOUDINARY.
+5. CloudinaryStorageService receives the file.
+6. CloudinaryConfig has valid credentials.
+7. Cloudinary API accepts the upload.
+8. Cloudinary returns success.
+9. secure_url is returned.
+10. public_id is returned.
+11. The frontend receives the correct response.
+12. Gallery can save/use the returned URL.
+13. The uploaded image can actually be displayed.
+14. Delete works.
+15. Replace works if implemented.
+
+Do NOT print any:
+- CLOUDINARY_API_SECRET
+- DB_PASSWORD
+- SUPABASE_SERVICE_ROLE_KEY
+- JWT secrets
+
+==================================================
+IF YOU CANNOT DIRECTLY ACCESS HOSTINGER
+==================================================
+
+Do NOT pretend that you performed the Cloudinary runtime test.
+
+Instead give me EXACT commands or browser steps to perform the real test on Hostinger/browser.
+
+Tell me exactly what result proves:
+
+CLOUDINARY AUTHENTICATION = PASS
+
+CLOUDINARY UPLOAD = PASS
+
+CLOUDINARY DELETE = PASS
+
+CLOUDINARY REPLACE = PASS
+
+==================================================
+TRACE THE PREVIOUS ERROR
+==================================================
+
+The application previously displayed:
+
+"Image upload is currently unavailable: Cloudinary storage is selected but credentials are missing. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET on the backend."
+
+The Hostinger Java process definitely contains all three variables.
+
+Therefore trace the exact source-code condition that generated that message.
+
+Identify:
+
+FILE
+CLASS
+METHOD
+CONDITION
+ROOT CAUSE
+
+Explain why the application previously believed credentials were missing.
+
+==================================================
+PUBLIC MEDIA
+==================================================
+
+Verify Cloudinary is used for:
+
+Gallery
+Events
+Members
+Sponsors
+
+Payment screenshots MUST NOT use Cloudinary.
+
+Payment screenshots must remain:
+
+Supabase private storage
+nlc-private
+
+==================================================
+REGISTRATION
+==================================================
+
+Verify:
+
+User registration
+→ payment
+→ screenshot
+→ PENDING
+→ admin approval/rejection
+
+Do not replace this with an automatic payment gateway.
+
+==================================================
+FINAL TEST MATRIX
+==================================================
+
+Produce:
+
+| Feature | Code Verified | Runtime Verified | Status |
+|---|---|---|---|
+| Frontend build | | | |
+| Backend build | | | |
+| Database | | | |
+| Authentication | | | |
+| Authorization | | | |
+| Events | | | |
+| Gallery | | | |
+| Members | | | |
+| Sponsors | | | |
+| Registration | | | |
+| Payment screenshot | | | |
+| Admin approval | | | |
+| Admin rejection | | | |
+| Cloudinary configuration | | | |
+| Cloudinary authentication | | | |
+| Cloudinary upload | | | |
+| Cloudinary delete | | | |
+| Cloudinary replace | | | |
+| Supabase private storage | | | |
+| Nginx | | | |
+| Production API | | | |
+| CORS | | | |
+| Security | | | |
+
+Allowed status values:
+
+PASS
+FAIL
+WARNING
+NOT VERIFIED
+
+IMPORTANT:
+
+Code inspection alone = NOT runtime verified.
+
+Do not call Cloudinary upload PASS unless a real upload succeeded.
+
+Do not call production deployment PASS unless the production endpoint was actually tested.
+
+Do not call browser flow PASS unless it was actually tested.
+
+==================================================
+FINAL OUTPUT
+==================================================
+
+Give me:
+
+1. Exact Cloudinary root cause.
+2. Exact fix, if any.
+3. Exact files changed.
+4. Build results.
+5. Cloudinary runtime test result.
+6. Hostinger tests still required.
+7. Browser tests still required.
+8. Any remaining errors.
+
+Do NOT commit.
+Do NOT push.
+Do NOT make unrelated changes.
+
+The final answer must clearly distinguish CODE VERIFIED from ACTUALLY RUNTIME TESTED.
